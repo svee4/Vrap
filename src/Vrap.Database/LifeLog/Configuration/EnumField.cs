@@ -17,13 +17,4 @@ public sealed class EnumField : TableField
 		{
 			Options = options is null ? [] : [.. options]
 		};
-
-	internal sealed class EnumFieldConfiguration : IEntityTypeConfiguration<EnumField>
-	{
-		public void Configure(EntityTypeBuilder<EnumField> builder)
-		{
-			builder.Property(m => m.Options)
-				.HasMaxLength(OptionMaxLength);
-		}
-	}
 }
