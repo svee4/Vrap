@@ -4,7 +4,7 @@ using Vrap.Database.LifeLog.Entries;
 
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class DataTable : IEntityTypeConfiguration<DataTable>
+public sealed class DataTable
 {
 	public const int NameMaxLength = 100;
 
@@ -27,9 +27,12 @@ public sealed class DataTable : IEntityTypeConfiguration<DataTable>
 		};
 	}
 
-	void IEntityTypeConfiguration<DataTable>.Configure(EntityTypeBuilder<DataTable> builder)
+	internal sealed class DataTableConfiguration : IEntityTypeConfiguration<DataTable>
 	{
-		builder.Property(m => m.Name)
-			.HasMaxLength(NameMaxLength);
+		public void Configure(EntityTypeBuilder<DataTable> builder)
+		{
+			builder.Property(m => m.Name)
+				.HasMaxLength(NameMaxLength);
+		}
 	}
 }

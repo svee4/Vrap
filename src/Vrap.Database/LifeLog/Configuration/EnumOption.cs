@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class EnumOption : IEntityTypeConfiguration<EnumOption>
+public sealed class EnumOption
 {
 	public const int ValueMaxLength = 50;
 
@@ -24,9 +24,12 @@ public sealed class EnumOption : IEntityTypeConfiguration<EnumOption>
 		};
 	}
 
-	void IEntityTypeConfiguration<EnumOption>.Configure(EntityTypeBuilder<EnumOption> builder)
+	internal sealed class EnumOptionConfiguration : IEntityTypeConfiguration<EnumOption>
 	{
-		builder.Property(m => m.Value)
-			.HasMaxLength(ValueMaxLength);
+		public void Configure(EntityTypeBuilder<EnumOption> builder)
+		{
+			builder.Property(m => m.Value)
+				.HasMaxLength(ValueMaxLength);
+		}
 	}
 }

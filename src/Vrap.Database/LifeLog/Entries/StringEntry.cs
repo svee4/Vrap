@@ -4,7 +4,7 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class StringEntry : FieldEntry, IEntityTypeConfiguration<StringEntry>
+public sealed class StringEntry : FieldEntry
 {
 	public string Value { get; private set; } = null!;
 
@@ -20,9 +20,13 @@ public sealed class StringEntry : FieldEntry, IEntityTypeConfiguration<StringEnt
 		};
 	}
 
-	void IEntityTypeConfiguration<StringEntry>.Configure(EntityTypeBuilder<StringEntry> builder)
+	internal sealed class StringEntryConfiguration : IEntityTypeConfiguration<StringEntry>
+
 	{
-		builder.Property(m => m.Value)
-			.HasMaxLength(StringField.AbsoluteMaxLength);
+		public void Configure(EntityTypeBuilder<StringEntry> builder)
+		{
+			builder.Property(m => m.Value)
+				.HasMaxLength(StringField.AbsoluteMaxLength);
+		}
 	}
 }

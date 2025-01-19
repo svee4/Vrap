@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class EnumField : TableField, IEntityTypeConfiguration<EnumField>
+public sealed class EnumField : TableField
 {
 	public const int OptionMaxLength = 50;
 
@@ -18,10 +18,12 @@ public sealed class EnumField : TableField, IEntityTypeConfiguration<EnumField>
 			Options = options is null ? [] : [.. options]
 		};
 
-	void IEntityTypeConfiguration<EnumField>.Configure(EntityTypeBuilder<EnumField> builder)
+	internal sealed class EnumFieldConfiguration : IEntityTypeConfiguration<EnumField>
 	{
-		builder.Property(m => m.Options)
-			.HasMaxLength(OptionMaxLength);
-
+		public void Configure(EntityTypeBuilder<EnumField> builder)
+		{
+			builder.Property(m => m.Options)
+				.HasMaxLength(OptionMaxLength);
+		}
 	}
 }
