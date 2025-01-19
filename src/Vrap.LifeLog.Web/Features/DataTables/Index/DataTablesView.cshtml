@@ -1,0 +1,32 @@
+@namespace Vrap.LifeLog.Web.Features.DataTables.Index
+@model DataTablesViewModel
+
+@section Head {
+    <link rel="stylesheet" href="/DataTables/index.css" />
+}
+
+<a href="/DataTables/Create" id="create-datatable" class="button-link">
+    Create new
+</a>
+
+<table id="table">
+    <thead>
+        <tr>
+            <th scope="col"><div>Name</div></th>
+            <th scope="col"><div>Add</div></th>
+            <th scope="col"><div>View</div></th>
+            <th scope="col"><div>Edit</div></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var table in Model.Tables)
+        {
+            <tr>
+                <td class="col-name"><div>@table.Name</div></td>
+                <td class="col-add"><a href="/DataTables/@table.Id/Add">Add entry</a></td>
+                <td class="col-view"><a href="/Data?table=@table.Id">View data</a></td>
+                <td class="col-edit"><a href="/DataTables/@table.Id/Edit">Edit table</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

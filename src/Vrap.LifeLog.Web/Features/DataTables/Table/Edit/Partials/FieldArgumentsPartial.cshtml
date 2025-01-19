@@ -1,0 +1,109 @@
+@namespace Vrap.LifeLog.Web.Features.DataTables.Table.Edit.Partials
+@model FieldArgumentsPartialModel
+@using static Vrap.Database.LifeLog.Configuration.TableFieldHelpers
+
+<div id="fieldargs-container" class="full-width aligned-input-container">
+    @switch (Model.FieldType)
+    {
+        case FieldType.DateTime:
+            {
+                var argies = (DateTimeArguments?)Model.FieldArguments;
+
+                <label for="fieldargs-minvalue">Minimum value</label>
+                <input type="datetime-local" name="minvalue" id="fieldargs-minvalue" value="@argies?.MaxValue" />
+                <div class="full-width">
+                    @Html.ValidationMessage(nameof(DateTimeArguments.MinValue))
+                </div>
+
+                <label for="fieldargs-maxvalue">Maximum value</label>
+                <input type="datetime-local" name="maxvalue" id="fieldargs-maxvalue" value="@argies?.MinValue" />
+                <div class="full-width">
+                    @Html.ValidationMessage(nameof(DateTimeArguments.MaxValue))
+                </div>
+
+                break;
+            }
+        case FieldType.Number:
+            {
+                var argies = (NumberArguments?)Model.FieldArguments;
+
+                <label for="fieldargs-minvalue">Minimum value</label>
+                <input type="number" name="minvalue" id="fieldargs-minvalue" value="@argies?.MaxValue" />
+                <div class="full-width">
+                    @Html.ValidationMessage(nameof(NumberArguments.MinValue))
+                </div>
+
+                <label for="fieldargs-maxvalue">Maximum value</label>
+                <input type="number" name="maxvalue" id="fieldargs-maxvalue" value="@argies?.MinValue" />
+                <div class="full-width">
+                    @Html.ValidationMessage(nameof(NumberArguments.MaxValue))
+                </div>
+
+                break;
+            }
+    }
+
+    @if (Model.FieldType == FieldType.Enum)
+    {
+        <div class="full-width">
+            <template id="fieldargs-enumvalues-template">
+                <div id="fieldargs-enumvalues-">
+                    <input type="text" name="options" />
+                    <button type="button">Remove</button>
+                </div>
+            </template>
+
+            <div id="fieldargs-enumvalues-container">
+            </div>
+
+            <div id="fieldargs-enumvalues-current-container">
+                <input type="text" value="" id="fieldargs-enumvalues-current" />
+            </div>
+
+            @Html.ValidationMessage(nameof(EnumArguments.Options))
+            <button type="button" id="fieldargs-addenumvalue">
+                Add
+            </button>
+
+            <script type="module">
+                let enumCounter = 0;
+
+                function addEnumValue(value) {
+                    const newel = document.getElementById("fieldargs-enumvalues-template").content.cloneNode(true);
+
+                    const firstChild = newel.firstElementChild;
+                    firstChild.id = firstChild.id + enumCounter.toString();
+                    enumCounter++;
+
+                    // newel.querySelector("*").id = newId;
+
+                    newel.querySelector("input").value = value;
+                    newel.querySelector("button").addEventListener("click", () => {
+                        firstChild.remove();
+                    });
+
+                    document.getElementById("fieldargs-enumvalues-container").appendChild(newel);
+                }
+
+                const button = document.getElementById("fieldargs-addenumvalue");
+                button.addEventListener("click", () => {
+                    const existing = document.getElementById("fieldargs-enumvalues-current");
+                    if (!existing) {
+                        console.warn("fieldargs-addenumvalue handler: no existing");
+                    }
+
+                    const value = existing.value;
+                    existing.value = "";
+                    addEnumValue(value);
+                });
+
+                @foreach (var value in ((EnumArguments?)Model?.FieldArguments)?.Options ?? [])
+                {
+                    <text>
+                            addEnumValue("@System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(value.Value)");
+                    </text>
+                }
+            </script>
+        </div>
+    }
+</div>

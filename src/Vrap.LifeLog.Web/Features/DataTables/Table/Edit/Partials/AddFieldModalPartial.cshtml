@@ -1,0 +1,59 @@
+@namespace Vrap.LifeLog.Web.Features.DataTables.Table.Edit.Partials
+@model AddFieldModalPartialModel
+
+<dialog id="addfield-dialog">
+
+    <script type="module">
+        const dialog = document.getElementById("addfield-dialog");
+        dialog.showModal();
+        dialog.addEventListener("close", () => setTimeout(() => dialog?.remove(), 50));
+    </script>
+
+    @* uses oob for success result *@
+    <form
+        id="addfield-form"
+        hx-post="/DataTables/@Model.TableId/Edit/AddField" 
+        hx-swap="outerHTML"
+        hx-target="#addfield-dialog"
+    >
+
+        <div class="aligned-input-container">
+            <label for="addfield-name">Name</label>
+            <input type="text" value="@Model.Name" name="name" id="addfield-name" required />
+
+            <label for="addfield-type">Type</label>
+            <select required name="type" id="addfield-type"
+                hx-get="/DataTables/@Model.TableId/Edit/FieldArguments"
+                hx-target="#addfield-additionals-container"
+                hx-swap="innerHTML"
+            >
+                <option value="" selected disabled>Select</option>
+                @foreach (var fieldType in Model.FieldTypes)
+                {
+                    <option value="@fieldType" @(fieldType == Model.Type?.ToString() ? "selected" : "")>
+                        @fieldType
+                    </option>
+                }
+            </select>
+            
+            <div class="full-width">
+                @Html.ValidationMessageFor(model => model.Type)
+            </div>
+        </div>
+
+        <div id="addfield-additionals-container">
+            <!-- additional field arguments based on the selected type -->
+            @if (Model.Type is { } type)
+            {
+                <tag:relative-partial name="FieldArgumentsPartial" 
+                    model="new FieldArgumentsPartialModel(type, Model.FieldArguments)" />
+            }
+        </div>
+
+        <div id="addfield-buttons-container">
+            <button type="button" onclick="document.getElementById('addfield-dialog').close()">Close</button>
+            <button type="submit">Add</button>
+        </div>
+    </form>
+
+</dialog>

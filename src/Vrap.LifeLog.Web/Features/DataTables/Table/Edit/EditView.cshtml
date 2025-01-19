@@ -1,0 +1,28 @@
+@namespace Vrap.LifeLog.Web.Features.DataTables.Table.Edit
+@model EditViewModel
+
+@section Head {
+    <link rel="stylesheet" href="/DataTables/edit.css" />
+}
+
+<h2 id="table-name">@Model.Table.Name</h2>
+
+<div>
+    <button id="change-table-name" type="button">Change name</button>
+    <button type="button"
+            hx-get="/DataTables/Edit/@Model.Id/AddFieldModalPartial"
+            hx-target="body"
+            hx-swap="beforeend"
+    >
+        Add field
+    </button>
+</div>
+
+<div>
+    <div id="fields-container">
+        @foreach (var field in Model.Table.Fields)
+        {
+            <tag:relative-partial name="Partials/FieldPartial.cshtml" model="field" />
+        }
+    </div>
+</div>

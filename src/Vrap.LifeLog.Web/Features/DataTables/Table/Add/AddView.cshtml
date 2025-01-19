@@ -1,0 +1,86 @@
+@namespace Vrap.LifeLog.Web.Features.DataTables.Table.Add
+@model AddViewModel
+@using static Database.LifeLog.Configuration.TableFieldHelpers
+
+@{
+    static TResult? IfHasValue<T, TResult>(T? arg, Func<T, TResult> func) where T : struct =>
+        arg is { } v ? func(v) : default;
+
+    static string? IfRequired(bool required) => required ? "required" : null;
+}
+
+<form hx-post="/DataTables/@Model.TableId/Add"
+      hx-target="this"
+      hx-swap="outerHTML">
+    <div class="aligned-input-container">
+
+        @foreach (var field in Model.Fields)
+        {
+            <label for="field-@field.Id">@field.Name</label>
+
+            @switch (field.Type)
+            {
+                case FieldType.DateTime:
+                    {
+                        var args = (DateTimeArguments)field.Arguments;
+
+                        <input type="datetime-local"
+                               id="field-@field.Id"
+                               name="field-@field.Id"
+                        @IfHasValue(args.MinValue, v => $"minvalue=\"{v}\"")
+                        @IfHasValue(args.MaxValue, v => $"maxvalue=\"{v}\"")
+                        @IfRequired(args.Required) />
+
+                        break;
+                    }
+                case FieldType.Number:
+                    {
+                        var args = (NumberArguments)field.Arguments;
+
+                        <input type="number"
+                               id="field-@field.Id"
+                               name="field-@field.Id"
+                               step="any"
+                        @IfHasValue(args.MinValue, v => $"minvalue=\"{v}\"")
+                        @IfHasValue(args.MaxValue, v => $"maxvalue=\"{v}\"")
+                        @IfRequired(args.Required) />
+
+                        break;
+                    }
+                case FieldType.String:
+                    {
+                        <input type="text" id="field-@field.Id" name="field-@field.Id" @IfRequired(field.Arguments.Required) />
+                        break;
+                    }
+
+                case FieldType.Enum:
+                    {
+                        var args = (EnumArguments)field.Arguments;
+
+                        <select id="field-@field.Id"
+                                name="field-@field.Id"
+                        @IfRequired(args.Required)>
+                            <option value="" selected disabled>Select</option>
+
+                            @foreach (var option in args.Options)
+                            {
+                                <option value="@option.Id">
+                                    @option.Value
+                                </option>
+                            }
+
+                        </select>
+                        break;
+                    }
+            }
+        }
+
+        <input type="hidden" id="timezone" name="timezone" value="" />
+        <script type="module">
+            const input = document.getElementById("timezone");
+            input.value = new Date().getTimezoneOffset();
+        </script>
+
+    </div>
+    <button type="submit">Add entry</button>
+</form>

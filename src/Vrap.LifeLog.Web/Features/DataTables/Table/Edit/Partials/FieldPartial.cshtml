@@ -1,0 +1,28 @@
+@namespace Vrap.LifeLog.Web.Features.DataTables.Table.Edit.Partials
+@model FieldPartialModel
+@using Vrap.LifeLog.Web.Infra.Mvc
+
+@if (Model.IsHtmxRequest)
+{
+    @* for AddFieldModalPartial success response *@
+    @*  <div>
+        <!-- swaps input form into empty div -->
+    </div> *@
+}
+
+@if (Model.IsHtmxRequest)
+{
+    @Html.Raw("""<div hx-swap-oob="beforeend:#fields-container">""");
+}
+
+<div style="display: flex; gap: 8px; align-items: center;">
+    <button type="button" onclick="alert('todo!')">Edit</button>
+    <p>
+        <span style="font-weight: bold">@Model.Name</span>: @Model.Type (@string.Join(", ", Model.PrintArguments()))
+    </p>
+</div>
+
+@if (Model.IsHtmxRequest)
+{
+    @Html.Raw("</div>");
+}

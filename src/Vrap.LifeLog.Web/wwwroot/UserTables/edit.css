@@ -1,0 +1,33 @@
+
+#table-name {
+	word-break: break-all;
+}
+
+#change-table-name {
+	align-self: flex-start;
+}
+
+#fields-container {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+#addfield-dialog {
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border: 2px solid black;
+	border-radius: 4px;
+}
+
+#addfield-dialog > form {
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+#addfield-buttons-container {
+	align-self: center;
+}

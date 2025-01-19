@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Vrap.LifeLog.Web</title>
+    <link rel="stylesheet" href="/base.css" />
+
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js"></script>
+
+    @RenderSection("Head", required: false)
+
+</head>
+<body hx-ext="response-targets">
+   <header id="page-header">
+       <div>
+           <a href="/">Home</a>
+           <a href="/DataTables">Tables</a>
+           <a href="/Data">Browse data</a>
+       </div>
+   </header>
+   <main id="page-main">
+        @RenderBody()
+   </main>
+   <footer id="page-footer"></footer>
+</body>
+</html>
