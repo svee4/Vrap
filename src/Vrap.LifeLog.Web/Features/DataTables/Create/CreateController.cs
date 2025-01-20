@@ -6,19 +6,19 @@ using Vrap.Database.LifeLog.Configuration;
 namespace Vrap.LifeLog.Web.Features.DataTables.Create;
 
 [Route("DataTables/Create")]
-[MvcHelper.MapView<CreateViewModel>("./CreateView")]
+[MvcHelper.MapView<CreateModel>("./CreateView")]
 public partial class CreateController : Controller
 {
 	[HttpGet("")]
-	public IActionResult Get() => Views.CreateView(new CreateViewModel { Name = "" });
+	public IActionResult Get() => Views.CreateView(new CreateModel { Name = "" });
 
 	[HttpPost("")]
-	public async Task<IActionResult> Post(CreateViewModel model, [FromServices] VrapDbContext dbContext)
+	public async Task<IActionResult> Post(CreateModel model, [FromServices] VrapDbContext dbContext)
 	{
 		var name = model.Name;
 		if (await dbContext.DataTables.AnyAsync(table => table.Name == name))
 		{
-			ModelState.AddModelError(nameof(CreateViewModel.Name), "Name is already in use");
+			ModelState.AddModelError(nameof(CreateModel.Name), "Name is already in use");
 			return Views.CreateView(model);
 		}
 

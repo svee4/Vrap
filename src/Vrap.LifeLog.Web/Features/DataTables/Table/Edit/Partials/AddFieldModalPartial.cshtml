@@ -17,7 +17,7 @@
         hx-target="#addfield-dialog"
     >
 
-        <div class="aligned-input-container">
+        <div class="dual-grid">
             <label for="addfield-name">Name</label>
             <input type="text" value="@Model.Name" name="name" id="addfield-name" required />
 
@@ -39,6 +39,9 @@
             <div class="full-width">
                 @Html.ValidationMessageFor(model => model.Type)
             </div>
+
+            <label for="addfield-required">Required</label>
+            <input type="checkbox" id="addfield-required" name="required" value="true" @(Model.Required ? "checked" : "") />
         </div>
 
         <div id="addfield-additionals-container">

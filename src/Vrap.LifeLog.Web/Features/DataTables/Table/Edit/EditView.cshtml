@@ -5,12 +5,13 @@
     <link rel="stylesheet" href="/DataTables/edit.css" />
 }
 
-<h2 id="table-name">@Model.Table.Name</h2>
+<h2>Edit @Model.Table.Name</h2>
 
 <div>
+    <a href="/DataTables/@Model.Id/Add" class="button-link">Add entry</a>
     <button id="change-table-name" type="button">Change name</button>
     <button type="button"
-            hx-get="/DataTables/Edit/@Model.Id/AddFieldModalPartial"
+            hx-get="/DataTables/@Model.Id/Edit/AddFieldModalPartial"
             hx-target="body"
             hx-swap="beforeend"
     >

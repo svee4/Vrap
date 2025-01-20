@@ -1,3 +1,5 @@
+using Vrap.Database.LifeLog.Entries;
+
 namespace Vrap.Database.LifeLog.Configuration;
 
 public static class TableFieldHelpers
@@ -54,6 +56,20 @@ public static class TableFieldHelpers
 		public sealed record Option(int Id, string Value);
 	}
 
+	public static FieldValue GetFieldValue(FieldEntry entry) => GetFieldType(entry.TableField) switch
+	{
+		FieldType.DateTime => new DateTimeValue(((DateTimeEntry)entry).Value),
+		FieldType.Number => new NumberValue(((NumberEntry)entry).Value),
+		FieldType.String => new StringValue(((StringEntry)entry).Value),
+		FieldType.Enum => new EnumValue(((EnumEntry)entry).Value),
+		_ => throw new InvalidOperationException("Unhandled field type"),
+	};
+
+	public abstract record FieldValue(FieldType Type);
+	public sealed record DateTimeValue(DateTimeOffset Value) : FieldValue(FieldType.DateTime);
+	public sealed record EnumValue(EnumOption Value) : FieldValue(FieldType.Enum);
+	public sealed record NumberValue(decimal Value) : FieldValue(FieldType.Number);
+	public sealed record StringValue(string Value) : FieldValue(FieldType.String);
 
 	public static T MapFieldArguments<T>(
 		FieldArguments arguments,
@@ -89,6 +105,29 @@ public static class TableFieldHelpers
 			FieldType.String => stringField(),
 			FieldType.Enum => enumField(),
 			_ => throw new ArgumentException($"Unhandled fieldtype {fieldType}")
+		};
+	}
+
+	public static T MapField<T>(
+		TableField field,
+		Func<DateTimeField, T> dateTimeField,
+		Func<NumberField, T> numberField,
+		Func<StringField, T> stringField,
+		Func<EnumField, T> enumField)
+	{
+		ArgumentNullException.ThrowIfNull(field);
+		ArgumentNullException.ThrowIfNull(dateTimeField);
+		ArgumentNullException.ThrowIfNull(numberField);
+		ArgumentNullException.ThrowIfNull(stringField);
+		ArgumentNullException.ThrowIfNull(enumField);
+
+		return GetFieldType(field) switch
+		{
+			FieldType.DateTime => dateTimeField((DateTimeField)field),
+			FieldType.Number => numberField((NumberField)field),
+			FieldType.String => stringField((StringField)field),
+			FieldType.Enum => enumField((EnumField)field),
+			_ => throw new ArgumentException($"Unhandled fieldtype {GetFieldType(field)}")
 		};
 	}
 

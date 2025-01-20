@@ -1,2 +1,12 @@
 @namespace Vrap.LifeLog.Web.Features.Data.Entry
 @model EntryViewModel
+@inject Vrap.LifeLog.Web.Infra.HumanizerService humanizer
+
+@section Head {
+    <link rel="stylesheet" href="/Data/entry.css" />
+}
+
+
+<h2>@Model.TableName</h2>
+<p>@humanizer.ToDateTimeString(Model.Created)</p>
+

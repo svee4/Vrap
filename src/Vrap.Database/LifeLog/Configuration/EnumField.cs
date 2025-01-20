@@ -1,10 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace Vrap.Database.LifeLog.Configuration;
 
 public sealed class EnumField : TableField
 {
+	/// <summary>
+	/// THIS IS NOT ENFORCED BY THE DATABASE
+	/// </summary>
 	public const int OptionMaxLength = 50;
 
 	public ICollection<EnumOption> Options { get; private set; } = null!;

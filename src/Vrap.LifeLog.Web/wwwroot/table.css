@@ -1,0 +1,33 @@
+
+.table {
+	border-collapse: collapse;
+	max-width: 100%;
+}
+
+.table, 
+.table :is(th, td) {
+	border: 1px solid black;
+}
+
+.table :is(th, td) :is(div, span, p, a) {
+	white-space: nowrap;
+	padding: 6px;
+}
+
+.table th > div {
+	text-align: start;
+	padding-right: 14px
+}
+
+.table .wide-col {
+	max-width: 0;
+}
+
+.table .wide-col > div {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.table .narrow-col {
+	width: 0;
+}

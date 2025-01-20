@@ -78,7 +78,7 @@ public partial class EditController : MvcController
 	{
 		var args = new DateTimeArguments(model.MinValue, model.MaxValue, model.Required);
 
-		var err = await AddFieldHelper(id, model.Name, FieldType.DateTime, dbContext, args,
+		var err = await AddFieldHelper(id, model, dbContext, args,
 			getField: () => DateTimeField.Create(model.Name, args.Required, args.MinValue, args.MaxValue));
 
 		return err ?? Views.FieldPartial(new FieldPartialModel(model.Name, FieldType.DateTime, args, true));
@@ -88,7 +88,7 @@ public partial class EditController : MvcController
 	{
 		var args = new EnumArguments(model.Options.Select(op => new EnumArguments.Option(-1, op)).ToList(), model.Required);
 
-		var err = await AddFieldHelper(id, model.Name, FieldType.Enum, dbContext, args,
+		var err = await AddFieldHelper(id, model, dbContext, args,
 			getField: () => EnumField.Create(model.Name, args.Required,
 				args.Options.Select(op => EnumOption.Create(op.Value, null))));
 
@@ -99,7 +99,7 @@ public partial class EditController : MvcController
 	{
 		var args = new NumberArguments(model.MinValue, model.MaxValue, model.Required);
 
-		var err = await AddFieldHelper(id, model.Name, FieldType.Number, dbContext, args,
+		var err = await AddFieldHelper(id, model, dbContext, args,
 			getField: () => NumberField.Create(model.Name, args.Required, args.MinValue, args.MaxValue));
 
 		return err ?? Views.FieldPartial(new FieldPartialModel(model.Name, FieldType.Number, args, true));
@@ -109,16 +109,15 @@ public partial class EditController : MvcController
 	{
 		var args = new StringArguments(model.MaxLength, model.Required);
 
-		var err = await AddFieldHelper(id, model.Name, FieldType.String, dbContext, args,
+		var err = await AddFieldHelper(id, model, dbContext, args,
 			getField: () => StringField.Create(model.Name, args.Required, args.MaxLength));
 
 		return err ?? Views.FieldPartial(new FieldPartialModel(model.Name, model.Type, args, true));
 	}
 
 	public async Task<IActionResult?> AddFieldHelper(
-		int id,
-		string name,
-		FieldType fieldType,
+		int tableId,
+		AddFieldModelBase model,
 		VrapDbContext dbContext,
 		FieldArguments args,
 		Func<TableField> getField)
@@ -129,9 +128,10 @@ public partial class EditController : MvcController
 				.WithStatus(HttpStatusCode.BadRequest)
 				.WithView(Views.AddFieldModalPartial(new AddFieldModalPartialModel
 				{
-					Name = name,
-					TableId = id,
-					Type = fieldType,
+					Name = model.Name,
+					TableId = tableId,
+					Type = model.Type,
+					Required = model.Required,
 					FieldTypes = FieldTypes,
 					FieldArguments = args
 				}))
@@ -140,7 +140,7 @@ public partial class EditController : MvcController
 
 		var table = await dbContext.DataTables
 			.Include(table => table.Fields)
-			.FirstOrDefaultAsync(table => table.Id == id);
+			.FirstOrDefaultAsync(table => table.Id == tableId);
 
 		if (table is null)
 		{
@@ -160,6 +160,7 @@ public partial class EditController : MvcController
 			Name = "",
 			TableId = id,
 			Type = null,
+			Required = false,
 			FieldTypes = FieldTypes,
 			FieldArguments = null
 		});
@@ -248,7 +249,7 @@ public partial class EditController : MvcController
 	{
 		public required string Name { get; init; }
 		public required FieldType Type { get; init; }
-		public required bool Required { get; init; }
+		public bool Required { get; init; }
 	}
 
 	public sealed class AddDateTimeFieldModel : AddFieldModelBase

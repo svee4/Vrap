@@ -1,0 +1,44 @@
+@namespace Vrap.LifeLog.Web.Features.Data.Browse
+@model BrowseViewModel
+@inject Vrap.LifeLog.Web.Infra.HumanizerService humanizer
+
+@section Head {
+    <link rel="stylesheet" href="/table.css" />
+}
+
+<h2>Entries for @Model.TableName</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            @foreach (var field in Model.Fields)
+            {
+                <th scope="col">
+                    <div>
+                        @field.FieldName
+                    </div>
+                </th>
+            }
+            <th scope="col"><div>Created</div></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model.Entries)
+        {
+            <tr>
+                @foreach (var field in entry.Entries)
+                {
+                    <td class="narrow-col">
+                        <div>
+                            <a href="/Browse/Entry/@entry.Id">@field.Print()</a>
+                        </div>
+                    </td>
+                }
+
+                <td class="narrow-col">
+                    <div>@humanizer.ToDateTimeString(entry.Created)</div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

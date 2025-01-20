@@ -13,8 +13,4 @@
 	  <None Include="wwwroot\DataTables\edit.css" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Features\Data\Browse\" />
-	</ItemGroup>
-
 </Project>

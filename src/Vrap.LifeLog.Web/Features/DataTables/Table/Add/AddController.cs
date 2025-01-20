@@ -29,6 +29,7 @@ public sealed partial class AddController : MvcController
 		return Views.AddView(new AddViewModel()
 		{
 			TableId = id,
+			TableName = (await dbContext.DataTables.SingleAsync(table => table.Id == id)).Name,
 			Fields = MapFieldDatas(fields)
 		});
 	}
@@ -57,18 +58,23 @@ public sealed partial class AddController : MvcController
 				if (args.Required)
 				{
 					ModelState.AddModelError(key, "Field is required");
+					success = false;
+					break;
 				}
-
-				success = false;
-				break;
+				else
+				{
+					continue;
+				}
 			}
 
-			if (formValue is not [var value])
+			if (formValue.Count > 1)
 			{
 				ModelState.AddModelError(key, "Cannot have more than one value");
 				success = false;
 				break;
 			}
+
+			var value = formValue[0];
 
 			if (value is null)
 			{
@@ -90,6 +96,7 @@ public sealed partial class AddController : MvcController
 				Views.AddViewPartial(new AddViewModel()
 				{
 					Fields = MapFieldDatas(fields),
+					TableName = (await dbContext.DataTables.SingleAsync(table => table.Id == id, token)).Name,
 					TableId = id
 				}))
 				.WithStatus(System.Net.HttpStatusCode.BadRequest)
@@ -140,7 +147,7 @@ public sealed partial class AddController : MvcController
 			DateTimeOffset timeValue;
 			try
 			{
-				var timezoneOffset = TimeSpan.FromHours(timezone);
+				var timezoneOffset = TimeSpan.FromMinutes(timezone);
 				timeValue = new DateTimeOffset(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second, timezoneOffset);
 			}
 			catch (ArgumentException)

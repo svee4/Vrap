@@ -1,9 +1,12 @@
+using Vrap.LifeLog.Web.Infra;
 using Vrap.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddSerilog();
 builder.AddVrapDatabase(builder.Configuration.GetRequiredConfiguration("Vrap:PostgresConnectionString"));
+
+builder.Services.AddScoped<HumanizerService>();
 
 builder.Services.AddControllersWithViews(options =>
 {

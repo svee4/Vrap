@@ -1,0 +1,33 @@
+@namespace Vrap.LifeLog.Web.Features.Data.Index
+@model DataViewModel
+@inject Vrap.LifeLog.Web.Infra.HumanizerService humanizer
+
+@section Head {
+    <link rel="stylesheet" href="/table.css" />
+}
+
+<h2>Top @Model.Entries.Count latest entries</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col"><div>Table</div></th>
+            <th scope="col"><div>Created</div></th>
+            <th scope="col"><div>Entry</div></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model.Entries)
+        {
+            <tr>
+                <td class="wide-col">
+                    <div>
+                        <a href="/Data/Browse/@entry.TableId">@entry.TableName</a>
+                    </div>
+                </td>
+                <td class="narrow-col"><div>@humanizer.ToDateTimeString(entry.Created)</div></td>
+                <td class="narrow-col"><a href="/Data/Entry/@entry.EntryId">Open entry</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

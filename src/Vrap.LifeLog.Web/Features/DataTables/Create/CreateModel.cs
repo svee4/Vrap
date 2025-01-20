@@ -3,7 +3,7 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Create;
 
-public sealed class CreateViewModel
+public sealed class CreateModel
 {
 	[Required(AllowEmptyStrings = false)]
 	[MinLength(1)]

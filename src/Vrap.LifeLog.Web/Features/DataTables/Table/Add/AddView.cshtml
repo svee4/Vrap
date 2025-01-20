@@ -9,10 +9,12 @@
     static string? IfRequired(bool required) => required ? "required" : null;
 }
 
+
+<h2>New @Model.TableName entry</h2>
 <form hx-post="/DataTables/@Model.TableId/Add"
       hx-target="this"
       hx-swap="outerHTML">
-    <div class="aligned-input-container">
+    <div class="dual-grid">
 
         @foreach (var field in Model.Fields)
         {

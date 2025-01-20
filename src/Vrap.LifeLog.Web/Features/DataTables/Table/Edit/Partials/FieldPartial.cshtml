@@ -18,7 +18,12 @@
 <div style="display: flex; gap: 8px; align-items: center;">
     <button type="button" onclick="alert('todo!')">Edit</button>
     <p>
-        <span style="font-weight: bold">@Model.Name</span>: @Model.Type (@string.Join(", ", Model.PrintArguments()))
+        <span style="font-weight: bold; font-size: 1.1rem">
+            @Model.Name: 
+        </span>
+        <span>
+            @Model.Type (@string.Join(", ", Model.PrintArguments()))
+        </span>
     </p>
 </div>
 
