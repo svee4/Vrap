@@ -11,6 +11,7 @@ builder.Services.AddScoped<HumanizerService>();
 builder.Services.AddControllersWithViews(options => options.ModelBinderProviders.Insert(0,
 		new Vrap.LifeLog.Web.Features.DataTables.Table.Edit.EditController.AddFieldModelBinderProvider()));
 
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
