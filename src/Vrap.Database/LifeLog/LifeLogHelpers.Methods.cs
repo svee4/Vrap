@@ -2,7 +2,7 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog;
 
-static partial class LifeLogHelpers
+public static partial class LifeLogHelpers
 {
 
 	public static TResult MapFieldType<TBase, TDateTime, TEnum, TNumber, TString, TResult>(

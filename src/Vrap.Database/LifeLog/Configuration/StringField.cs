@@ -21,7 +21,7 @@ public sealed class StringField : TableField, IDiscriminatedEntity<FieldType>
 	private StringField() { }
 	private StringField(string name, bool required, int ordinal) : base(name, required, ordinal) { }
 
-	public static StringField Create(string name, bool required, int ordinal, int maxLength) => 
+	public static StringField Create(string name, bool required, int ordinal, int maxLength) =>
 		new(name, required, ordinal)
 		{
 			MaxLength = maxLength

@@ -47,11 +47,6 @@ public sealed class MvcResult(Controller controller)
 			_controller.HttpContext.Response.StatusCode = (int)status;
 		}
 
-		if (Result is { } result)
-		{
-			return result;
-		}
-
-		throw new InvalidOperationException("MvcResult.Result is not set");
+		return Result is { } result ? result : throw new InvalidOperationException("MvcResult.Result is not set");
 	}
 }

@@ -24,7 +24,7 @@ public abstract class TableField
 		Name = name;
 		Required = required;
 		Ordinal = ordinal;
-	}	
+	}
 
 	internal sealed class TableFieldConfiguration : IEntityTypeConfiguration<TableField>
 	{

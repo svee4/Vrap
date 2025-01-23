@@ -8,7 +8,6 @@ using Vrap.Database.LifeLog.Configuration;
 using Vrap.Database.LifeLog.Entries;
 using Vrap.LifeLog.Web.Features.DataTables.Table.Add;
 using Vrap.LifeLog.Web.Infra.Mvc;
-using Vrap.Database.LifeLog;
 using static Vrap.Database.LifeLog.LifeLogHelpers;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Table;
@@ -22,17 +21,14 @@ public sealed partial class AddController : MvcController
 	public async Task<IActionResult> GetAdd(int id, [FromServices] VrapDbContext dbContext)
 	{
 		var fields = await GetTableFields(id, dbContext);
-		if (fields is null)
-		{
-			return Result.NotFound($"/DataTables/{id}/Add", "/DataTables");
-		}
-
-		return Views.AddView(new AddViewModel()
-		{
-			TableId = id,
-			TableName = (await dbContext.DataTables.SingleAsync(table => table.Id == id)).Name,
-			Fields = MapFieldDatas(fields)
-		});
+		return fields is null
+			? Result.NotFound($"/DataTables/{id}/Add", "/DataTables")
+			: Views.AddView(new AddViewModel()
+			{
+				TableId = id,
+				TableName = (await dbContext.DataTables.SingleAsync(table => table.Id == id)).Name,
+				Fields = MapFieldDatas(fields)
+			});
 	}
 
 	[HttpPost("")]

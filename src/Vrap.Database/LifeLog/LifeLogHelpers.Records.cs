@@ -3,7 +3,7 @@ using Vrap.Database.LifeLog.Entries;
 
 namespace Vrap.Database.LifeLog;
 
-static partial class LifeLogHelpers
+public static partial class LifeLogHelpers
 {
 
 	public abstract record FieldArguments
@@ -28,10 +28,10 @@ static partial class LifeLogHelpers
 			);
 	}
 
-	public sealed record DateTimeArguments(DateTimeOffset? MinValue, DateTimeOffset? MaxValue, bool Required, int Ordinal) 
+	public sealed record DateTimeArguments(DateTimeOffset? MinValue, DateTimeOffset? MaxValue, bool Required, int Ordinal)
 		: FieldArguments(FieldType.DateTime, Required, Ordinal);
 
-	public sealed record NumberArguments(decimal? MinValue, decimal? MaxValue, bool Required, int Ordinal) 
+	public sealed record NumberArguments(decimal? MinValue, decimal? MaxValue, bool Required, int Ordinal)
 		: FieldArguments(FieldType.Number, Required, Ordinal);
 
 	public sealed record StringArguments(int MaxLength, bool Required, int Ordinal)
