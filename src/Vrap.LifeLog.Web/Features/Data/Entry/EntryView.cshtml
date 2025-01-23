@@ -4,18 +4,20 @@
 
 @section Head {
     <link rel="stylesheet" href="/Data/entry.css" />
+    <link rel="stylesheet" href="/table.css" />
+
 }
 
 
 <h2>@Model.TableName</h2>
 <p>@humanizer.ToDateTimeString(Model.Created)</p>
 
-<table>
+<table class="table">
     @foreach (var field in Model.Fields)
     {
         <tr>
-            <th>@field.Name</th>
-            <td>@humanizer.FieldValueSlimToString(field.GetValue())</td>
+            <th class="narrow-col"><div>@field.Name</div></th>
+            <td class="wide-col"><div>@humanizer.FieldValueSlimToString(field.GetValue())</div></td>
         </tr>
     }
 </table>
