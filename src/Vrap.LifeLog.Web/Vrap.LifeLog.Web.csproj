@@ -5,6 +5,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<ProjectReference Include="..\Vrap.Shared\Vrap.Shared.csproj" />
 		<ProjectReference Include="..\MvcHelper.Generator\MvcHelper.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>

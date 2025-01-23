@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Vrap.LifeLog.Web.Database;
 using Vrap.LifeLog.Web.Infra;
 using Vrap.Shared;
 
@@ -5,6 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddSerilog();
 builder.AddVrapDatabase(builder.Configuration.GetRequiredConfiguration("Vrap:PostgresConnectionString"));
+
+builder.Services.AddNpgsql<LifeLogDbContext>(builder.Configuration.GetRequiredConfiguration("Vrap:LifeLog:PostgresConnectionString"));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>();
+
+builder.Services.AddAuthorizationBuilder()
+	.SetFallbackPolicy(new AuthorizationPolicyBuilder()
+		.RequireAuthenticatedUser()
+		.Build());
+
+
+//builder.
 
 builder.Services.AddScoped<HumanizerService>();
 
