@@ -1,14 +1,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 as sdk
 
 WORKDIR /app
-COPY . .
+COPY .. .
+
+WORKDIR /app/Vrap.LifeLog.Web
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 as runtime
 
 WORKDIR /app
-COPY --from=sdk /app/out .
+COPY --from=sdk /app/Vrap.LifeLog.Web/out .
 
 RUN useradd -ms /bin/bash dockeruser
 
