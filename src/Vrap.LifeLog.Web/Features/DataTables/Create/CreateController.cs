@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vrap.Database;
 using Vrap.Database.LifeLog.Configuration;
+using Vrap.LifeLog.Web.Infra.Mvc;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Create;
 
 [Route("DataTables/Create")]
 [MvcHelper.MapView<CreateModel>("./CreateView")]
-public partial class CreateController : Controller
+public partial class CreateController : MvcController
 {
 	[HttpGet("")]
 	public IActionResult Get() => Views.CreateView(new CreateModel { Name = "" });
@@ -26,6 +27,8 @@ public partial class CreateController : Controller
 		_ = await dbContext.AddAsync(table);
 		_ = await dbContext.SaveChangesAsync();
 
-		return Redirect($"/DataTables/{table.Id}/Edit");
+		return Result()
+			.WithHtmxRedirect($"/DataTables/{table.Id}/Edit")
+			.ToActionResult();
 	}
 }

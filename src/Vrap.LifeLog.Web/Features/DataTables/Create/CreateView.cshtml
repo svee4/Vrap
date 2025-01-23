@@ -1,7 +1,7 @@
 @namespace Vrap.LifeLog.Web.Features.DataTables.Create
 @model CreateModel
 
-<form method="post">
+<form hx-post="/DataTables/Create">
     <div>
         <label for="name">Name</label>
         <input type="text" id="name" name="name" />

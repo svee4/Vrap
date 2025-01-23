@@ -31,7 +31,7 @@ public sealed partial class BrowseController : MvcController
 
 		if (tableData is null)
 		{
-			return Result.NotFound("1", "2");
+			return Result().NotFound("1", "2");
 		}
 
 		var query = dbContext.DataEntries

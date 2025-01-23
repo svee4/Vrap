@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace Vrap.LifeLog.Web.Infra.Mvc;
 
-public class MvcController : Controller
+public abstract class MvcController : Controller
 {
-	public MvcResult Result => new(this);
+	public MvcResult Result() => new(this);
 }
 
 public sealed class MvcResult(Controller controller)
@@ -14,12 +16,26 @@ public sealed class MvcResult(Controller controller)
 
 	public IActionResult? Result { get; private set; }
 	public HttpStatusCode? StatusCode { get; private set; }
+	public string? Redirect { get; private set; }
+
+	private static void EnsurePropNotSet<T>(T? prop, [CallerArgumentExpression(nameof(prop))] string propName = "")
+	{
+		if (prop is not null)
+		{
+			ThrowAlreadySet(propName);
+		}
+	}
+
+	[DoesNotReturn]
+	private static void ThrowAlreadySet(string propName) => throw new InvalidOperationException($"{propName} is already set");
 
 	public MvcResult WithResult(IActionResult result)
 	{
+		EnsurePropNotSet(Result);
 		Result = result;
 		return this;
 	}
+
 
 	public MvcResult WithView(ViewResult view) => WithResult(view);
 
@@ -36,17 +52,42 @@ public sealed class MvcResult(Controller controller)
 
 	public MvcResult WithStatus(HttpStatusCode status)
 	{
+		EnsurePropNotSet(StatusCode);
 		StatusCode = status;
 		return this;
 	}
 
+	public MvcResult WithRedirect(string to)
+	{
+		EnsurePropNotSet(Redirect);
+		Redirect = to;
+		return WithResult(_controller.Redirect(to));
+	}
+
+	public MvcResult WithHtmxRedirect(string to)
+	{
+		EnsurePropNotSet(Redirect);
+		Redirect = to;
+		return WithResult(_controller.Ok());
+	}
+
 	public IActionResult ToActionResult()
 	{
-		if (StatusCode is { } status)
+		if (Result is not { } result)
 		{
-			_controller.HttpContext.Response.StatusCode = (int)status;
+			throw new InvalidOperationException("MvcResult.Result is not set");
 		}
 
-		return Result is { } result ? result : throw new InvalidOperationException("MvcResult.Result is not set");
+		if (StatusCode is { } status)
+		{
+			_controller.Response.StatusCode = (int)status;
+		}
+
+		if (Redirect is { } redirect)
+		{
+			_controller.Response.Headers.Add("HX-Redirect", redirect);
+		}
+
+		return result;
 	}
 }

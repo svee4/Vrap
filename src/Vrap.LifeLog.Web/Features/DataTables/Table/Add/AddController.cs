@@ -22,7 +22,7 @@ public sealed partial class AddController : MvcController
 	{
 		var fields = await GetTableFields(id, dbContext);
 		return fields is null
-			? Result.NotFound($"/DataTables/{id}/Add", "/DataTables")
+			? Result().NotFound($"/DataTables/{id}/Add", "/DataTables")
 			: Views.AddView(new AddViewModel()
 			{
 				TableId = id,
@@ -37,7 +37,7 @@ public sealed partial class AddController : MvcController
 		var fields = await GetTableFields(id, dbContext);
 		if (fields is null)
 		{
-			return Result.NotFound($"/DataTables/{id}/Add", "/DataTables");
+			return Result().NotFound($"/DataTables/{id}/Add", "/DataTables");
 		}
 
 		var helper = new ParsingHelper(id, dbContext, this);
@@ -89,7 +89,7 @@ public sealed partial class AddController : MvcController
 
 		if (!success)
 		{
-			return Result.WithView(
+			return Result().WithView(
 				Views.AddViewPartial(new AddViewModel()
 				{
 					Fields = MapFieldDatas(fields),
@@ -107,7 +107,7 @@ public sealed partial class AddController : MvcController
 		_ = dbContext.DataEntries.Add(entry);
 		_ = await dbContext.SaveChangesAsync(token);
 
-		return Redirect($"/Data/Entry/{entry.Id}");
+		return Result().WithHtmxRedirect($"/Data/Entry/{entry.Id}").ToActionResult();
 	}
 
 	private sealed partial class ParsingHelper(int tableId, VrapDbContext dbContext, Controller controller)
@@ -124,7 +124,7 @@ public sealed partial class AddController : MvcController
 				() => TryParseDateTime(key, value, (DateTimeField)field, (DateTimeArguments)args),
 				() => TryParseEnum(key, value, (EnumField)field, (EnumArguments)args, token),
 				() => TryParseNumber(key, value, (NumberField)field, (NumberArguments)args),
-				() => TryParseString(key, value, (StringField)field, (StringArguments)args),
+				() => TryParseString(key, value, (StringField)field, (StringArguments)args)
 			);
 
 		private Task<bool> TryParseDateTime(string fieldName, string value, DateTimeField field, DateTimeArguments args)

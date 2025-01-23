@@ -47,7 +47,7 @@ public partial class EditController : MvcController
 
 		if (table is null)
 		{
-			return Result.NotFound($"/DataTables/{id}/Edit/", "/DataTables");
+			return Result().NotFound($"/DataTables/{id}/Edit/", "/DataTables");
 		}
 
 		var model = new EditViewModel
@@ -127,7 +127,7 @@ public partial class EditController : MvcController
 	{
 		if (!ModelState.IsValid)
 		{
-			return Result
+			return Result()
 				.WithStatus(HttpStatusCode.BadRequest)
 				.WithView(Views.AddFieldModalPartial(new AddFieldModalPartialModel
 				{
