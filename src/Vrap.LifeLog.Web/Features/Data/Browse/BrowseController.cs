@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcHelper;
 using Vrap.Database;
-using Vrap.Database.LifeLog.Configuration;
+using Vrap.Database.LifeLog;
 using Vrap.LifeLog.Web.Infra.Mvc;
 
 namespace Vrap.LifeLog.Web.Features.Data.Browse;
@@ -24,7 +24,7 @@ public sealed partial class BrowseController : MvcController
 					.Select(field => new
 					{
 						Name = field.Name,
-						Type = TableFieldHelpers.GetFieldType(field)
+						Type = LifeLogHelpers.GetFieldType(field)
 					})
 			})
 			.FirstOrDefaultAsync();

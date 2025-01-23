@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog;

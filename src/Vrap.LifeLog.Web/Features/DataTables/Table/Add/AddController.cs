@@ -8,7 +8,8 @@ using Vrap.Database.LifeLog.Configuration;
 using Vrap.Database.LifeLog.Entries;
 using Vrap.LifeLog.Web.Features.DataTables.Table.Add;
 using Vrap.LifeLog.Web.Infra.Mvc;
-using static Vrap.Database.LifeLog.Configuration.TableFieldHelpers;
+using Vrap.Database.LifeLog;
+using static Vrap.Database.LifeLog.LifeLogHelpers;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Table;
 
@@ -124,10 +125,10 @@ public sealed partial class AddController : MvcController
 
 		public async Task<bool> TryParseAndAdd(TableField field, string key, string value, FieldArguments args, CancellationToken token) =>
 			await MapFieldType(GetFieldType(field),
-				dateTimeField: () => TryParseDateTime(key, value, (DateTimeField)field, (DateTimeArguments)args),
-				numberField: () => TryParseNumber(key, value, (NumberField)field, (NumberArguments)args),
-				stringField: () => TryParseString(key, value, (StringField)field, (StringArguments)args),
-				enumField: () => TryParseEnum(key, value, (EnumField)field, (EnumArguments)args, token)
+				() => TryParseDateTime(key, value, (DateTimeField)field, (DateTimeArguments)args),
+				() => TryParseEnum(key, value, (EnumField)field, (EnumArguments)args, token),
+				() => TryParseNumber(key, value, (NumberField)field, (NumberArguments)args),
+				() => TryParseString(key, value, (StringField)field, (StringArguments)args),
 			);
 
 		private Task<bool> TryParseDateTime(string fieldName, string value, DateTimeField field, DateTimeArguments args)
@@ -263,7 +264,7 @@ public sealed partial class AddController : MvcController
 		var tempFields = await dbContext
 			.DataTables
 			.Where(table => table.Id == tableId)
-			.Select(table => table.Fields)
+			.Select(table => table.Fields.OrderBy(field => field.Ordinal).ToList())
 			.FirstOrDefaultAsync();
 
 		return tempFields;

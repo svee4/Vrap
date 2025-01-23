@@ -9,10 +9,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Vrap.Shared;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
-using static Vrap.Database.LifeLog.Configuration.TableFieldHelpers;
 using System.Text.RegularExpressions;
 using Vrap.LifeLog.Web.Features.DataTables.Table.Edit.Partials;
 using Vrap.LifeLog.Web.Infra;
+using Vrap.Database.LifeLog;
+using static Vrap.Database.LifeLog.LifeLogHelpers;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Table.Edit;
 
@@ -33,12 +34,14 @@ public partial class EditController : MvcController
 			{
 				Id = table.Id,
 				Name = table.Name,
-				Fields = table.Fields.Select(field => new
-				{
-					Name = field.Name,
-					Type = GetFieldType(field),
-					Field = field
-				})
+				Fields = table.Fields
+					.OrderBy(field => field.Ordinal)
+					.Select(field => new
+					{
+						Name = field.Name,
+						Type = GetFieldType(field),
+						Field = field
+					})
 			})
 			.FirstOrDefault(table => table.Id == id);
 
@@ -55,7 +58,7 @@ public partial class EditController : MvcController
 				Name = table.Name,
 				Fields = table.Fields.Select(field =>
 					new FieldPartialModel(
-						field.Name, field.Type, TableFieldHelpers.FieldArguments.FromField(field.Field), false))
+						field.Name, field.Type, LifeLogHelpers.FieldArguments.FromField(field.Field), false))
 				.ToList()
 			}
 		};

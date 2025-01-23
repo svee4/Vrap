@@ -1,8 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using LinqKit;
-using System.Linq.Expressions;
-using Vrap.Database.LifeLog.Entries;
-using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog;
 

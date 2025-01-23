@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using System.Linq.Expressions;
 using Vrap.Database.LifeLog;
 using Vrap.Database.LifeLog.Configuration;

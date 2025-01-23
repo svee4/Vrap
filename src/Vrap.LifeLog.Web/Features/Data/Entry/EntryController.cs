@@ -1,10 +1,7 @@
-using LinqKit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcHelper;
-using System.Runtime.InteropServices;
 using Vrap.Database;
-using Vrap.Database.LifeLog;
 using Vrap.Database.LifeLog.Entries;
 using Vrap.LifeLog.Web.Infra.Mvc;
 using static Vrap.Database.LifeLog.LifeLogHelpers;
@@ -15,7 +12,6 @@ namespace Vrap.LifeLog.Web.Features.Data.Entry;
 [MapView<EntryViewModel>("./EntryView")]
 public sealed partial class EntryController : MvcController
 {
-
 	[HttpGet("")]
 	public async Task<IActionResult> Get(int id, [FromServices] VrapDbContext dbContext)
 	{
@@ -28,28 +24,30 @@ public sealed partial class EntryController : MvcController
 			})
 			.SingleAsync();
 
-		var fields = await dbContext.FieldEntries
+		var fields = (await dbContext.FieldEntries
 			.Where(field => field.Entry.Id == id)
+			.OrderBy(field => field.TableField.Ordinal)
 			.Select(field => new
 			{
 				Field = field,
-				Type = 
+				Type = field.TableField.FieldType,
+				FieldName = field.TableField.Name
 			})
-			.ToListAsync();
+			.ToListAsync())
+			.Select(field => MapFieldType(field.Type, field.Field,
+				FieldEntrySlim (DateTimeEntry v) => new DateTimeEntrySlim(field.FieldName, new DateTimeValueSlim(v.Value)),
+				FieldEntrySlim (EnumEntry v) => new EnumEntrySlim(field.FieldName, new EnumValueSlim(v.Value.Value)),
+				FieldEntrySlim (NumberEntry v) => new NumberEntrySlim(field.FieldName, new NumberValueSlim(v.Value)),
+				FieldEntrySlim (StringEntry v) => new StringEntrySlim(field.FieldName, new StringValueSlim(v.Value))
+			))
+			.ToList();
 
-		if (entry is null)
+		return Views.EntryView(new EntryViewModel
 		{
-			return Result.NotFound($"/Data/Entry/{id}", "/Data");
-		}
-
-		return null;
-
-		//return Views.EntryView(new EntryViewModel
-		//{
-		//	TableId = id,
-		//	TableName = entry.TableName,
-		//	Created = entry.Created,
-		//	Fields = entry.Fields.All().ToList()
-		//});
+			TableId = id,
+			TableName = entry.TableName,
+			Created = entry.Created,
+			Fields = fields
+		});
 	}
 }

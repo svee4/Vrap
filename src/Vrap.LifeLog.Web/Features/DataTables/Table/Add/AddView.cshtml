@@ -1,6 +1,7 @@
 @namespace Vrap.LifeLog.Web.Features.DataTables.Table.Add
 @model AddViewModel
-@using static Database.LifeLog.Configuration.TableFieldHelpers
+@using Vrap.Database.LifeLog
+@using static Vrap.Database.LifeLog.LifeLogHelpers
 
 @{
     static TResult? IfHasValue<T, TResult>(T? arg, Func<T, TResult> func) where T : struct =>

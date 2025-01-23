@@ -1,6 +1,7 @@
 @namespace Vrap.LifeLog.Web.Features.DataTables.Table.Edit.Partials
 @model FieldArgumentsPartialModel
-@using static Vrap.Database.LifeLog.Configuration.TableFieldHelpers
+@using Vrap.Database.LifeLog
+@using static Vrap.Database.LifeLog.LifeLogHelpers
 
 <div id="fieldargs-container" class="full-width dual-grid">
     @switch (Model.FieldType)

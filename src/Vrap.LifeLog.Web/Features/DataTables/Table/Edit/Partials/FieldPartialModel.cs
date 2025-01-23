@@ -1,5 +1,6 @@
 using System.Globalization;
-using static Vrap.Database.LifeLog.Configuration.TableFieldHelpers;
+using Vrap.Database.LifeLog;
+using static Vrap.Database.LifeLog.LifeLogHelpers;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Table.Edit.Partials;
 
@@ -15,17 +16,17 @@ public sealed class FieldPartialModel(string name, FieldType type, FieldArgument
 
 	public IReadOnlyList<string> PrintArguments()
 	{
-		var sections = MapFieldArguments<IReadOnlyList<string>>(Arguments,
-			dateTimeField: args => [
+		var sections = MapFieldType(Arguments.Type, Arguments,
+			static IReadOnlyList<string> (DateTimeArguments args) => [
 				$"Minimum value: {args.MinValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}",
 				$"Maximum value: {args.MaxValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}"],
-			numberField: args => [
+			static (EnumArguments args) => [$"Options ({args.Options.Count}): {string.Join(", ", args.Options)}"],
+			static (NumberArguments args) => [
 				$"Minimum value: {args.MinValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}",
 				$"Maximum value: {args.MaxValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}"],
-			stringField: _ => [],
-			enumField: args => [$"Options ({args.Options.Count}): {string.Join(", ", args.Options)}"]
+			static (StringArguments _) => []
 		);
 
-		return sections;
+		return [$"Required: {Arguments.Required}", .. sections];
 	}
 }

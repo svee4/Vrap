@@ -1,6 +1,7 @@
 using System.Globalization;
 using Vrap.Database.LifeLog.Configuration;
-using static Vrap.Database.LifeLog.Configuration.TableFieldHelpers;
+using Vrap.Database.LifeLog;
+using static Vrap.Database.LifeLog.LifeLogHelpers;
 
 namespace Vrap.LifeLog.Web.Features.Data;
 
@@ -9,18 +10,18 @@ public static class DataHelpers
 	public abstract record FieldEntry(FieldType Type, string Name)
 	{
 		public string Print() => MapFieldType(Type,
-			dateTimeField: () => ((DateTimeEntry)this).Value.ToString("HH:mm:ss dd/MM/yyyy", CultureInfo.InvariantCulture),
-			numberField: () => $"{((NumberEntry)this).Value}",
-			stringField: () => $"{((StringEntry)this).Value}",
-			enumField: () => $"{((EnumEntry)this).Value}"
+			() => ((DateTimeEntry)this).Value.ToString("HH:mm:ss dd/MM/yyyy", CultureInfo.InvariantCulture),
+			() => $"{((EnumEntry)this).Value}",
+			() => $"{((NumberEntry)this).Value}",
+			() => $"{((StringEntry)this).Value}"
 		);
 
 		public static FieldEntry FromDb(Database.LifeLog.Entries.FieldEntry entry) =>
 			MapFieldType<FieldEntry>(GetFieldType(entry.TableField),
-				dateTimeField: () => new DateTimeEntry(entry.TableField.Name, ((Database.LifeLog.Entries.DateTimeEntry)entry).Value),
-				numberField: () => new NumberEntry(entry.TableField.Name, ((Database.LifeLog.Entries.NumberEntry)entry).Value),
-				stringField: () => new StringEntry(entry.TableField.Name, ((Database.LifeLog.Entries.StringEntry)entry).Value),
-				enumField: () => new EnumEntry(entry.TableField.Name, ((Database.LifeLog.Entries.EnumEntry)entry).Value)
+				() => new DateTimeEntry(entry.TableField.Name, ((Database.LifeLog.Entries.DateTimeEntry)entry).Value),
+				() => new EnumEntry(entry.TableField.Name, ((Database.LifeLog.Entries.EnumEntry)entry).Value),
+				() => new NumberEntry(entry.TableField.Name, ((Database.LifeLog.Entries.NumberEntry)entry).Value),
+				() => new StringEntry(entry.TableField.Name, ((Database.LifeLog.Entries.StringEntry)entry).Value)
 			);
 	}
 	public sealed record DateTimeEntry(string Name, DateTimeOffset Value) : FieldEntry(FieldType.DateTime, Name);

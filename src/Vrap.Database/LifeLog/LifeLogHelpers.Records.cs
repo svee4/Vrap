@@ -10,57 +10,36 @@ static partial class LifeLogHelpers
 	{
 		public FieldType Type { get; }
 		public bool Required { get; }
+		public int Ordinal { get; }
 
-		private protected FieldArguments(FieldType type, bool required) => (Type, Required) = (type, required);
+		private protected FieldArguments(FieldType type, bool required, int ordinal)
+		{
+			Type = type;
+			Required = required;
+			Ordinal = ordinal;
+		}
 
 		public static FieldArguments FromField(TableField field) =>
 			MapFieldType(GetFieldType(field), field,
-				FieldArguments (DateTimeField v) => DateTimeArguments.FromField(v),
-				FieldArguments (EnumField v) => EnumArguments.FromField(v),
-				FieldArguments (NumberField v) => NumberArguments.FromField(v),
-				FieldArguments (StringField v) => StringArguments.FromField(v)
+				FieldArguments (DateTimeField v) => new DateTimeArguments(v.MinValue, v.MaxValue, v.Required, v.Ordinal),
+				FieldArguments (EnumField v) => new EnumArguments(v.Options.Select(op => new EnumArguments.Option(op.Id, op.Value)).ToList(), v.Required, v.Ordinal),
+				FieldArguments (NumberField v) => new NumberArguments(v.MinValue, v.MaxValue, v.Required, v.Ordinal),
+				FieldArguments (StringField v) => new StringArguments(v.MaxLength, v.Required, v.Ordinal)
 			);
 	}
 
-	public sealed record DateTimeArguments(DateTimeOffset? MinValue, DateTimeOffset? MaxValue, bool Required)
-		: FieldArguments(FieldType.DateTime, Required)
+	public sealed record DateTimeArguments(DateTimeOffset? MinValue, DateTimeOffset? MaxValue, bool Required, int Ordinal) 
+		: FieldArguments(FieldType.DateTime, Required, Ordinal);
+
+	public sealed record NumberArguments(decimal? MinValue, decimal? MaxValue, bool Required, int Ordinal) 
+		: FieldArguments(FieldType.Number, Required, Ordinal);
+
+	public sealed record StringArguments(int MaxLength, bool Required, int Ordinal)
+		: FieldArguments(FieldType.String, Required, Ordinal);
+
+	public sealed record EnumArguments(IReadOnlyList<EnumArguments.Option> Options, bool Required, int Ordinal)
+		: FieldArguments(FieldType.Enum, Required, Ordinal)
 	{
-		public static DateTimeArguments FromField(DateTimeField field)
-		{
-			ArgumentNullException.ThrowIfNull(field);
-			return new(field.MinValue, field.MaxValue, field.Required);
-		}
-	}
-
-	public sealed record NumberArguments(decimal? MinValue, decimal? MaxValue, bool Required)
-		: FieldArguments(FieldType.Number, Required)
-	{
-		public static NumberArguments FromField(NumberField field)
-		{
-			ArgumentNullException.ThrowIfNull(field);
-			return new(field.MinValue, field.MaxValue, field.Required);
-		}
-	}
-
-	public sealed record StringArguments(int MaxLength, bool Required) : FieldArguments(FieldType.String, Required)
-	{
-		public static StringArguments FromField(StringField field)
-		{
-			ArgumentNullException.ThrowIfNull(field);
-			return new(field.MaxLength, field.Required);
-		}
-	}
-
-
-	public sealed record EnumArguments(IReadOnlyList<EnumArguments.Option> Options, bool Required)
-		: FieldArguments(FieldType.Enum, Required)
-	{
-		public static EnumArguments FromField(EnumField field)
-		{
-			ArgumentNullException.ThrowIfNull(field);
-			return new(field.Options.Select(op => new Option(op.Id, op.Value)).ToList(), field.Required);
-		}
-
 		public readonly record struct Option(int Id, string Value);
 	}
 
@@ -75,7 +54,6 @@ static partial class LifeLogHelpers
 	public sealed record EnumValueSlim(string Value) : FieldValueSlim(FieldType.Enum);
 	public sealed record NumberValueSlim(decimal Value) : FieldValueSlim(FieldType.Number);
 	public sealed record StringValueSlim(string Value) : FieldValueSlim(FieldType.String);
-
 
 
 	public abstract record FieldEntrySlim

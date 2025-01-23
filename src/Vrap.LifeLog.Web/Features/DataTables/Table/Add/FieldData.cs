@@ -1,4 +1,5 @@
-﻿using static Vrap.Database.LifeLog.Configuration.TableFieldHelpers;
+using Vrap.Database.LifeLog;
+using static Vrap.Database.LifeLog.LifeLogHelpers;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Table.Add;
 

@@ -10,16 +10,14 @@ public sealed class HumanizerService
 	public const string DefaultTimeFormat = "HH:mm:ss";
 	public const string DefaultDateTimeFormat = $"{DefaultTimeFormat} {DefaultDateFormat}";
 
-
-
-	public string FieldValueToString(LifeLogHelpers.FieldValueSlim value)
+	public string FieldValueSlimToString(LifeLogHelpers.FieldValueSlim value)
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		return LifeLogHelpers.MapFieldType(value.Type, value,
-			(LifeLogHelpers.FieldValueSlim.DateTime v) => ToDateTimeString(v.Value),
-			(LifeLogHelpers.FieldValueSlim.Enum v) => v.Value,
-			(LifeLogHelpers.FieldValueSlim.Number v) => ToNumericString(v.Value),
-			(LifeLogHelpers.FieldValueSlim.String v) => v.Value
+			(LifeLogHelpers.DateTimeValueSlim v) => ToDateTimeString(v.Value),
+			(LifeLogHelpers.EnumValueSlim v) => v.Value,
+			(LifeLogHelpers.NumberValueSlim v) => ToNumericString(v.Value),
+			(LifeLogHelpers.StringValueSlim v) => v.Value
 		);
 	}
 
