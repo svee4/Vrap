@@ -41,8 +41,6 @@ public sealed partial class VrapDbContext(DbContextOptions options) : DbContext(
 			.HasDiscriminator<TDiscriminator>(discriminatorPropertySelector)
 			.HasValue<TBase>(baseTypeDiscriminator);
 
-		Console.WriteLine($"Configuring base {tbase} with discr {tdiscriminator}");
-
 		foreach (var type in typeof(VrapDbContext).Assembly.GetTypes()
 			.Where(type => type.BaseType == tbase))
 		{
@@ -57,8 +55,6 @@ public sealed partial class VrapDbContext(DbContextOptions options) : DbContext(
 			{
 				throw new InvalidOperationException($"Discriminator value {value2} is used more than once");
 			}
-
-			Console.WriteLine($"Child {type} with discr {value2}");
 
 			modelBuilder.Entity(type).HasBaseType(tbase);
 			discriminatorBuilder.HasValue(type, value2);
