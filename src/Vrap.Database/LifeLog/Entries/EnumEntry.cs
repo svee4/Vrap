@@ -2,9 +2,11 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class EnumEntry : FieldEntry
+public sealed class EnumEntry : FieldEntry, IDiscriminatedChild<FieldType>
 {
 	public EnumOption Value { get; private set; } = null!;
+
+	public static FieldType Discriminator => FieldType.Enum;
 
 	private EnumEntry() { }
 	private EnumEntry(EnumField f, DataEntry? e) : base(f, e) { }

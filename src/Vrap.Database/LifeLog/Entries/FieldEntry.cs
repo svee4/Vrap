@@ -8,6 +8,8 @@ public abstract class FieldEntry
 	public DataEntry Entry { get; private set; }
 	public TableField TableField { get; private set; }
 
+	public FieldType FieldType { get; private set; }
+
 	// ef core
 	protected FieldEntry()
 	{

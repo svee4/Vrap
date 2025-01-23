@@ -1,15 +1,17 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class NumberField : TableField
+public sealed class NumberField : TableField, IDiscriminatedChild<FieldType>
 {
 	public decimal? MinValue { get; private set; }
 	public decimal? MaxValue { get; private set; }
 
-	private NumberField() { }
-	private NumberField(string name, bool required) : base(name, required) { }
+	public static FieldType Discriminator => FieldType.Number;
 
-	public static NumberField Create(string name, bool required, decimal? minValue, decimal? maxValue) =>
-		new(name, required)
+	private NumberField() { }
+	private NumberField(string name, bool required, int ordinal) : base(name, required, ordinal) { }
+
+	public static NumberField Create(string name, bool required, int ordinal, decimal? minValue, decimal? maxValue) =>
+		new(name, required, ordinal)
 		{
 			MinValue = minValue,
 			MaxValue = maxValue

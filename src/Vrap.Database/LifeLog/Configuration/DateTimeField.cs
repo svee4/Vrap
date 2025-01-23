@@ -1,15 +1,17 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class DateTimeField : TableField
+public sealed class DateTimeField : TableField, IDiscriminatedChild<FieldType>
 {
 	public DateTimeOffset? MinValue { get; private set => field = value?.ToUniversalTime(); }
 	public DateTimeOffset? MaxValue { get; private set => field = value?.ToUniversalTime(); }
 
-	private DateTimeField() { }
-	private DateTimeField(string name, bool required) : base(name, required) { }
+	public static FieldType Discriminator => FieldType.DateTime;
 
-	public static DateTimeField Create(string name, bool required, DateTimeOffset? minValue, DateTimeOffset? maxValue) =>
-		new(name, required)
+	private DateTimeField() { }
+	private DateTimeField(string name, bool required, int ordinal) : base(name, required, ordinal) { }
+
+	public static DateTimeField Create(string name, bool required, int ordinal, DateTimeOffset? minValue, DateTimeOffset? maxValue) =>
+		new(name, required, ordinal)
 		{
 			MinValue = minValue,
 			MaxValue = maxValue

@@ -2,9 +2,10 @@ using Vrap.Database.LifeLog.Entries;
 
 namespace Vrap.Database.LifeLog.Configuration;
 
+[Obsolete("Use LifeLogHelpers")]
 public static class TableFieldHelpers
 {
-	public abstract record FieldArguments(FieldType Type, bool Required)
+	public abstract record FieldArguments(FieldType Type, bool Required, int Ordinal)
 	{
 		public static FieldArguments FromField(TableField field) =>
 			MapFieldType<FieldArguments>(GetFieldType(field),
@@ -15,42 +16,43 @@ public static class TableFieldHelpers
 			);
 	}
 
-	public sealed record DateTimeArguments(DateTimeOffset? MinValue, DateTimeOffset? MaxValue, bool Required)
-		: FieldArguments(FieldType.DateTime, Required)
+	public sealed record DateTimeArguments(DateTimeOffset? MinValue, DateTimeOffset? MaxValue, bool Required, int Ordinal)
+		: FieldArguments(FieldType.DateTime, Required, Ordinal)
 	{
 		public static DateTimeArguments FromField(DateTimeField field)
 		{
 			ArgumentNullException.ThrowIfNull(field);
-			return new(field.MinValue, field.MaxValue, field.Required);
+			return new(field.MinValue, field.MaxValue, field.Required, field.Ordinal);
 		}
 	}
 
-	public sealed record NumberArguments(decimal? MinValue, decimal? MaxValue, bool Required)
-		: FieldArguments(FieldType.Number, Required)
+	public sealed record NumberArguments(decimal? MinValue, decimal? MaxValue, bool Required, int Ordinal)
+		: FieldArguments(FieldType.Number, Required, Ordinal)
 	{
 		public static NumberArguments FromField(NumberField field)
 		{
 			ArgumentNullException.ThrowIfNull(field);
-			return new(field.MinValue, field.MaxValue, field.Required);
+			return new(field.MinValue, field.MaxValue, field.Required, field.Ordinal);
 		}
 	}
 
-	public sealed record StringArguments(int MaxLength, bool Required) : FieldArguments(FieldType.String, Required)
+	public sealed record StringArguments(int MaxLength, bool Required, int Ordinal) 
+		: FieldArguments(FieldType.String, Required, Ordinal)
 	{
 		public static StringArguments FromField(StringField field)
 		{
 			ArgumentNullException.ThrowIfNull(field);
-			return new(field.MaxLength, field.Required);
+			return new(field.MaxLength, field.Required, field.Ordinal);
 		}
 	}
 
-	public sealed record EnumArguments(IReadOnlyList<EnumArguments.Option> Options, bool Required)
-		: FieldArguments(FieldType.Enum, Required)
+	public sealed record EnumArguments(IReadOnlyList<EnumArguments.Option> Options, bool Required, int Ordinal)
+		: FieldArguments(FieldType.Enum, Required, Ordinal)
 	{
 		public static EnumArguments FromField(EnumField field)
 		{
 			ArgumentNullException.ThrowIfNull(field);
-			return new(field.Options.Select(op => new Option(op.Id, op.Value)).ToList(), field.Required);
+			return new(field.Options.Select(op => new Option(op.Id, op.Value)).ToList(), field.Required, field.Ordinal);
 		}
 
 		public sealed record Option(int Id, string Value);

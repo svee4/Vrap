@@ -76,20 +76,20 @@ public partial class EditController : MvcController
 
 	private async Task<IActionResult> AddDateTimeField(int id, AddDateTimeFieldModel model, [FromServices] VrapDbContext dbContext)
 	{
-		var args = new DateTimeArguments(model.MinValue, model.MaxValue, model.Required);
+		var args = new DateTimeArguments(model.MinValue, model.MaxValue, model.Required, model.Ordinal);
 
 		var err = await AddFieldHelper(id, model, dbContext, args,
-			getField: () => DateTimeField.Create(model.Name, args.Required, args.MinValue, args.MaxValue));
+			getField: () => DateTimeField.Create(model.Name, args.Required, args.Ordinal, args.MinValue, args.MaxValue));
 
 		return err ?? Views.FieldPartial(new FieldPartialModel(model.Name, FieldType.DateTime, args, true));
 	}
 
 	private async Task<IActionResult> AddEnumField(int id, AddEnumFieldModel model, [FromServices] VrapDbContext dbContext)
 	{
-		var args = new EnumArguments(model.Options.Select(op => new EnumArguments.Option(-1, op)).ToList(), model.Required);
+		var args = new EnumArguments(model.Options.Select(op => new EnumArguments.Option(-1, op)).ToList(), model.Required, model.Ordinal);
 
 		var err = await AddFieldHelper(id, model, dbContext, args,
-			getField: () => EnumField.Create(model.Name, args.Required,
+			getField: () => EnumField.Create(model.Name, args.Required, args.Ordinal,
 				args.Options.Select(op => EnumOption.Create(op.Value, null))));
 
 		return err ?? Views.FieldPartial(new FieldPartialModel(model.Name, FieldType.Enum, args, true));
@@ -97,20 +97,20 @@ public partial class EditController : MvcController
 
 	private async Task<IActionResult> AddNumberField(int id, AddNumberFieldModel model, [FromServices] VrapDbContext dbContext)
 	{
-		var args = new NumberArguments(model.MinValue, model.MaxValue, model.Required);
+		var args = new NumberArguments(model.MinValue, model.MaxValue, model.Required, model.Ordinal);
 
 		var err = await AddFieldHelper(id, model, dbContext, args,
-			getField: () => NumberField.Create(model.Name, args.Required, args.MinValue, args.MaxValue));
+			getField: () => NumberField.Create(model.Name, args.Required, args.Ordinal, args.MinValue, args.MaxValue));
 
 		return err ?? Views.FieldPartial(new FieldPartialModel(model.Name, FieldType.Number, args, true));
 	}
 
 	private async Task<IActionResult> AddStringField(int id, AddStringFieldModel model, [FromServices] VrapDbContext dbContext)
 	{
-		var args = new StringArguments(model.MaxLength, model.Required);
+		var args = new StringArguments(model.MaxLength, model.Required, model.Ordinal);
 
 		var err = await AddFieldHelper(id, model, dbContext, args,
-			getField: () => StringField.Create(model.Name, args.Required, args.MaxLength));
+			getField: () => StringField.Create(model.Name, args.Required, args.Ordinal, args.MaxLength));
 
 		return err ?? Views.FieldPartial(new FieldPartialModel(model.Name, model.Type, args, true));
 	}
@@ -132,6 +132,7 @@ public partial class EditController : MvcController
 					TableId = tableId,
 					Type = model.Type,
 					Required = model.Required,
+					Ordinal = model.Ordinal,
 					FieldTypes = FieldTypes,
 					FieldArguments = args
 				}))
@@ -161,6 +162,7 @@ public partial class EditController : MvcController
 			TableId = id,
 			Type = null,
 			Required = false,
+			Ordinal = 1,
 			FieldTypes = FieldTypes,
 			FieldArguments = null
 		});
@@ -250,6 +252,7 @@ public partial class EditController : MvcController
 		public required string Name { get; init; }
 		public required FieldType Type { get; init; }
 		public bool Required { get; init; }
+		public required int Ordinal { get; init; }
 	}
 
 	public sealed class AddDateTimeFieldModel : AddFieldModelBase

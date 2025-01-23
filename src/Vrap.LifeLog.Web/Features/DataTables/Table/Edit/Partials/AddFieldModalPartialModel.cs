@@ -8,6 +8,7 @@ public sealed record AddFieldModalPartialModel
 	public required int TableId { get; init; }
 	public required TableFieldHelpers.FieldType? Type { get; init; }
 	public required bool Required { get; init; }
+	public required int Ordinal { get; init; }
 	public required IReadOnlyList<string> FieldTypes { get; init; }
 
 	private TableFieldHelpers.FieldArguments? _args;

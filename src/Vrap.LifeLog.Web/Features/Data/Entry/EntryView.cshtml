@@ -10,3 +10,12 @@
 <h2>@Model.TableName</h2>
 <p>@humanizer.ToDateTimeString(Model.Created)</p>
 
+<table>
+    @foreach (var field in Model.Fields)
+    {
+        <tr>
+            <th>@field.Name</th>
+            <td>@humanizer.FieldValueToString(field.Value)</td>
+        </tr>
+    }
+</table>

@@ -42,6 +42,9 @@
 
             <label for="addfield-required">Required</label>
             <input type="checkbox" id="addfield-required" name="required" value="true" @(Model.Required ? "checked" : "") />
+
+            <label for="addfield-ordinal">Ordinal</label>
+            <input type="number" id="addfield-ordinal" name="ordinal" value="@Model.Ordinal" />
         </div>
 
         <div id="addfield-additionals-container">

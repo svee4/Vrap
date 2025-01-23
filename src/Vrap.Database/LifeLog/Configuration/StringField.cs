@@ -1,6 +1,6 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class StringField : TableField
+public sealed class StringField : TableField, IDiscriminatedChild<FieldType>
 {
 	public const int AbsoluteMaxLength = 1000;
 
@@ -16,11 +16,13 @@ public sealed class StringField : TableField
 		}
 	}
 
-	private StringField() { }
-	private StringField(string name, bool required) : base(name, required) { }
+	public static FieldType Discriminator => FieldType.String;
 
-	public static StringField Create(string name, bool required, int maxLength) => 
-		new(name, required)
+	private StringField() { }
+	private StringField(string name, bool required, int ordinal) : base(name, required, ordinal) { }
+
+	public static StringField Create(string name, bool required, int ordinal, int maxLength) => 
+		new(name, required, ordinal)
 		{
 			MaxLength = maxLength
 		};

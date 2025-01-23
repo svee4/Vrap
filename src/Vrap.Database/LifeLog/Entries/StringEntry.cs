@@ -4,9 +4,11 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class StringEntry : FieldEntry
+public sealed class StringEntry : FieldEntry, IDiscriminatedChild<FieldType>
 {
 	public string Value { get; private set; } = null!;
+
+	public static FieldType Discriminator => FieldType.String;
 
 	private StringEntry() { }
 	private StringEntry(StringField f, DataEntry? e) : base(f, e) { }
@@ -21,7 +23,6 @@ public sealed class StringEntry : FieldEntry
 	}
 
 	internal sealed class StringEntryConfiguration : IEntityTypeConfiguration<StringEntry>
-
 	{
 		public void Configure(EntityTypeBuilder<StringEntry> builder)
 		{

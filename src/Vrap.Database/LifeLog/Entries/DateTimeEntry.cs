@@ -2,9 +2,11 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class DateTimeEntry : FieldEntry
+public sealed class DateTimeEntry : FieldEntry, IDiscriminatedChild<FieldType>
 {
 	public DateTimeOffset Value { get; private set; }
+
+	public static FieldType Discriminator => FieldType.DateTime;
 
 	private DateTimeEntry() { }
 	private DateTimeEntry(DateTimeField f, DataEntry? e) : base(f, e) { }

@@ -2,9 +2,11 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class NumberEntry : FieldEntry
+public sealed class NumberEntry : FieldEntry, IDiscriminatedChild<FieldType>
 {
 	public decimal Value { get; private set; }
+
+	public static FieldType Discriminator => FieldType.Number;
 
 	private NumberEntry() { }
 	private NumberEntry(NumberField f, DataEntry? e) : base(f, e) { }

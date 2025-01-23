@@ -1,6 +1,6 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class EnumField : TableField
+public sealed class EnumField : TableField, IDiscriminatedChild<FieldType>
 {
 	/// <summary>
 	/// THIS IS NOT ENFORCED BY THE DATABASE
@@ -9,11 +9,14 @@ public sealed class EnumField : TableField
 
 	public ICollection<EnumOption> Options { get; private set; } = null!;
 
-	private EnumField() { }
-	private EnumField(string name, bool required) : base(name, required) { }
+	public static FieldType Discriminator => FieldType.Enum;
 
-	public static EnumField Create(string name, bool required, IEnumerable<EnumOption>? options) =>
-		new EnumField(name, required)
+
+	private EnumField() { }
+	private EnumField(string name, bool required, int ordinal) : base(name, required, ordinal) { }
+
+	public static EnumField Create(string name, bool required, int ordinal, IEnumerable<EnumOption>? options) =>
+		new EnumField(name, required, ordinal)
 		{
 			Options = options is null ? [] : [.. options]
 		};

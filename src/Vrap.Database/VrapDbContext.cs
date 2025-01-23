@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
+using Vrap.Database.LifeLog;
 using Vrap.Database.LifeLog.Configuration;
 using Vrap.Database.LifeLog.Entries;
 
@@ -16,21 +18,48 @@ public sealed partial class VrapDbContext(DbContextOptions options) : DbContext(
 	{
 		ArgumentNullException.ThrowIfNull(modelBuilder);
 
-		MapDerivedTypes<TableField>(modelBuilder);
-		MapDerivedTypes<FieldEntry>(modelBuilder);
+		ConfigureAbstractEntity<TableField, FieldType>(modelBuilder, nameof(TableField.FieldType));
+		ConfigureAbstractEntity<FieldEntry, FieldType>(modelBuilder, nameof(FieldEntry.FieldType));
 
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(VrapDbContext).Assembly);
 
 		base.OnModelCreating(modelBuilder);
 	}
 
-	private static void MapDerivedTypes<TBase>(ModelBuilder modelBuilder)
+	private static void ConfigureAbstractEntity<TBase, TDiscriminator>(ModelBuilder modelBuilder, string discriminatorPropertyName)
+		where TBase : class
 	{
 		var tbase = typeof(TBase);
+		var tdiscriminator = typeof(TDiscriminator);
+
+		HashSet<TDiscriminator> used = [];
+
+		var discriminatorBuilder = modelBuilder.Entity<TBase>()
+			.HasDiscriminator<TDiscriminator>(discriminatorPropertyName);
+
 		foreach (var type in typeof(VrapDbContext).Assembly.GetTypes()
 			.Where(type => type.BaseType == tbase))
 		{
-			_ = modelBuilder.Entity(type).HasBaseType(tbase);
+			if (type.GetInterface("IDiscriminatedChild`1") is not { } @interface
+				|| @interface.GetGenericArguments().SingleOrDefault() != tdiscriminator)
+			{
+				throw new InvalidOperationException(
+					$"Derived type {type} does not implemented interface {typeof(IDiscriminatedChild<TDiscriminator>)}");
+			}
+
+			var prop = @interface.GetProperty("Discriminator")
+				?? throw new InvalidOperationException("Discriminator property not found");
+
+			var value = prop.GetValue(null) ?? throw new InvalidOperationException("Could not get value");
+			var value2 = (TDiscriminator)value;
+
+			if (!used.Add(value2))
+			{
+				throw new InvalidOperationException($"Discriminator value {value2} is used more than once");
+			}
+
+			modelBuilder.Entity(type).HasBaseType(tbase);
+			discriminatorBuilder.HasValue(type, value2);
 		}
 	}
 }
