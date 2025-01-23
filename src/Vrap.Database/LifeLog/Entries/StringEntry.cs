@@ -4,7 +4,7 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class StringEntry : FieldEntry, IDiscriminatedChild<FieldType>
+public sealed class StringEntry : FieldEntry, IDiscriminatedEntity<FieldType>
 {
 	public string Value { get; private set; } = null!;
 

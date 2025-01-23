@@ -2,7 +2,7 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class DateTimeEntry : FieldEntry, IDiscriminatedChild<FieldType>
+public sealed class DateTimeEntry : FieldEntry, IDiscriminatedEntity<FieldType>
 {
 	public DateTimeOffset Value { get; private set; }
 

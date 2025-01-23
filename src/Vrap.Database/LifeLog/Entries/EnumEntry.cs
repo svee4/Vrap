@@ -2,7 +2,7 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class EnumEntry : FieldEntry, IDiscriminatedChild<FieldType>
+public sealed class EnumEntry : FieldEntry, IDiscriminatedEntity<FieldType>
 {
 	public EnumOption Value { get; private set; } = null!;
 

@@ -1,6 +1,15 @@
 using Vrap.Database;
 
+// System.Diagnostics.Debugger.Launch();
+
 var builder = Host.CreateApplicationBuilder(args);
+
+const string Message = """
+Migrating database? Added a hypertable?
+Remember to update the generated migration file with migrationBuilder.CreateHyperTable
+""";
+
+builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>().LogWarning(Message);
 
 var connectionString = builder.Configuration["Vrap:PostgresConnectionString"];
 
@@ -15,10 +24,5 @@ builder.Services.AddNpgsql<VrapDbContext>(
 
 var host = builder.Build();
 
-host.Services.GetRequiredService<ILogger<Program>>().LogWarning(
-"""
-Migrating database? Added a hypertable?
-Remember to update the generated migration file with migrationBuilder.CreateHyperTable
-""");
 
 host.Run();

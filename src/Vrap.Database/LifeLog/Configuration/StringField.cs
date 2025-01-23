@@ -1,6 +1,6 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class StringField : TableField, IDiscriminatedChild<FieldType>
+public sealed class StringField : TableField, IDiscriminatedEntity<FieldType>
 {
 	public const int AbsoluteMaxLength = 1000;
 

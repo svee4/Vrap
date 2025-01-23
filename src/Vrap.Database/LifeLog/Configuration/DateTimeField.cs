@@ -1,6 +1,6 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class DateTimeField : TableField, IDiscriminatedChild<FieldType>
+public sealed class DateTimeField : TableField, IDiscriminatedEntity<FieldType>
 {
 	public DateTimeOffset? MinValue { get; private set => field = value?.ToUniversalTime(); }
 	public DateTimeOffset? MaxValue { get; private set => field = value?.ToUniversalTime(); }

@@ -1,6 +1,6 @@
 namespace Vrap.Database;
 
-internal interface IDiscriminatedChild<TDiscriminator>
+internal interface IDiscriminatedEntity<TDiscriminator>
 {
 	static abstract TDiscriminator Discriminator { get; }
 }

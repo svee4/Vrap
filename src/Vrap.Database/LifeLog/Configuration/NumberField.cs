@@ -1,6 +1,6 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class NumberField : TableField, IDiscriminatedChild<FieldType>
+public sealed class NumberField : TableField, IDiscriminatedEntity<FieldType>
 {
 	public decimal? MinValue { get; private set; }
 	public decimal? MaxValue { get; private set; }

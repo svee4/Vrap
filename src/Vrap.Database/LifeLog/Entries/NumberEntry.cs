@@ -2,7 +2,7 @@ using Vrap.Database.LifeLog.Configuration;
 
 namespace Vrap.Database.LifeLog.Entries;
 
-public sealed class NumberEntry : FieldEntry, IDiscriminatedChild<FieldType>
+public sealed class NumberEntry : FieldEntry, IDiscriminatedEntity<FieldType>
 {
 	public decimal Value { get; private set; }
 

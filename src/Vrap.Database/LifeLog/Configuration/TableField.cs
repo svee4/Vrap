@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Vrap.Database.LifeLog.Configuration;
 
-public abstract class TableField 
+public abstract class TableField
 {
 	public const int NameMaxLength = 100;
 

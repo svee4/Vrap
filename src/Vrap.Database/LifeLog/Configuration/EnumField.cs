@@ -1,6 +1,6 @@
 namespace Vrap.Database.LifeLog.Configuration;
 
-public sealed class EnumField : TableField, IDiscriminatedChild<FieldType>
+public sealed class EnumField : TableField, IDiscriminatedEntity<FieldType>
 {
 	/// <summary>
 	/// THIS IS NOT ENFORCED BY THE DATABASE
