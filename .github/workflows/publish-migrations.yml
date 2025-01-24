@@ -1,0 +1,46 @@
+name: Publish EF Core migration bundle
+
+on:
+  push:
+    branches: [ "release" ]
+    paths: [ "src/Vrap.Database/**" ]
+
+permissions:
+  contents: write # for uploading a release to github
+
+env:
+  GITHUB_TOKEN: ${{ github.TOKEN }}
+
+jobs:
+  build-and-publish:
+    name: Build bundle and publish
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "src/Vrap.Database.Migrations"
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Install ef tools
+        run: dotnet tool install dotnet-ef
+
+      - name: dotnet restore
+        run: dotnet restore
+
+      - name: dotnet build
+        run: dotnet build
+
+      - name: Create bundle
+        run: dotnet ef migrations bundle --target-runtime net8.0 --output ./migrations
+
+      - name: Create github release
+        # gh cli is preinstalled on runners
+        run: gh release upload ${{ github.sha }} ./migrations       
+      
