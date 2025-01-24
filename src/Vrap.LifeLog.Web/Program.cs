@@ -69,6 +69,8 @@ app.MapControllers();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {
+	var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+	logger.LogInformation("Migrating database");
 	await using var dbContext = scope.ServiceProvider.GetRequiredService<LifeLogDbContext>();
 	await dbContext.Database.MigrateAsync();
 }
