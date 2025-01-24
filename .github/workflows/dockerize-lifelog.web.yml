@@ -1,6 +1,7 @@
 name: Docker build and push
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "release" ]
     paths: [ "src/Vrap.LifeLog.Web/**", "src/Vrap.Database/**", "src/Vrap.Shared/**" ]
