@@ -42,6 +42,8 @@ jobs:
         run: dotnet ef migrations bundle --verbose --output ./migrations -- --no-connection
 
       - name: Create github release
+        env:
+          RELEASE_NAME: migration-${{ github.sha }}
         # gh cli is preinstalled on runners
-        run: gh release upload ${{ github.sha }} ./migrations       
+        run: gh release create "$RELEASE_NAME" ./migrations       
       
