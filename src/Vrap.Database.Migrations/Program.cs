@@ -1,6 +1,6 @@
 using Vrap.Database;
 
-// System.Diagnostics.Debugger.Launch();
+//System.Diagnostics.Debugger.Launch();
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -9,13 +9,19 @@ Migrating database? Added a hypertable?
 Remember to update the generated migration file with migrationBuilder.CreateHyperTable
 """;
 
-builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>().LogWarning(Message);
+var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+logger.LogWarning(Message);
 
-var connectionString = builder.Configuration["Vrap:PostgresConnectionString"];
-
-if (string.IsNullOrEmpty(connectionString))
+string connectionString;
+if (args.Contains("--no-connection"))
 {
-	throw new InvalidOperationException("Vrap:PostgresConnectionString not defined");
+	logger.LogInformation("Skipping connection string");
+	connectionString = "";
+}
+else
+{
+	connectionString = builder.Configuration["Vrap:PostgresConnectionString"]
+		?? throw new InvalidOperationException("Vrap:PostgresConnectionString not defined");
 }
 
 builder.Services.AddNpgsql<VrapDbContext>(
@@ -23,6 +29,5 @@ builder.Services.AddNpgsql<VrapDbContext>(
 	options => options.MigrationsAssembly(typeof(VrapDbContext).Assembly));
 
 var host = builder.Build();
-
 
 host.Run();
