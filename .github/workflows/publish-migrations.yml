@@ -39,7 +39,7 @@ jobs:
         run: dotnet build
 
       - name: Create bundle
-        run: dotnet ef migrations bundle --target-runtime net8.0 --output ./migrations -- --no-connection
+        run: dotnet ef migrations bundle --verbose --target-runtime net8.0 --output ./migrations -- --no-connection
 
       - name: Create github release
         # gh cli is preinstalled on runners
