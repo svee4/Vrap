@@ -6,7 +6,7 @@ using Vrap.Database.LifeLog.Entries;
 
 namespace Vrap.Database;
 
-public sealed partial class VrapDbContext(DbContextOptions options) : DbContext(options)
+public sealed partial class VrapDbContext(DbContextOptions<VrapDbContext> options) : DbContext(options)
 {
 	public DbSet<DataTable> DataTables { get; private set; } = null!;
 	public DbSet<TableField> TableFields { get; private set; } = null!;
