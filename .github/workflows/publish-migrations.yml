@@ -1,6 +1,7 @@
 name: Publish EF Core migration bundle
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "release" ]
     paths: [ "src/Vrap.Database/**" ]
