@@ -14,6 +14,7 @@ builder.AddSerilog();
 builder.AddVrapDatabase(builder.Configuration.GetRequiredConfiguration("Vrap:PostgresConnectionString"));
 
 builder.Services.AddNpgsql<LifeLogDbContext>(builder.Configuration.GetRequiredConfiguration("Vrap:LifeLog:PostgresConnectionString"));
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 	.AddEntityFrameworkStores<LifeLogDbContext>();
 

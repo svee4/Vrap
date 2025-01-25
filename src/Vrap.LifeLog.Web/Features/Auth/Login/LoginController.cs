@@ -12,10 +12,12 @@ namespace Vrap.LifeLog.Web.Features.Auth.Login;
 public sealed partial class LoginController : MvcController
 {
 	[HttpGet("")]
-	public IActionResult Get([FromServices] SignInManager<IdentityUser> manager)
+	public IActionResult Get([FromServices] SignInManager<IdentityUser> manager, ILogger<LoginController> logger)
 	{
 		const string Provider = "Microsoft";
-		var properties = manager.ConfigureExternalAuthenticationProperties(Provider, "/Auth/Callback");
-		return new ChallengeResult(Provider, properties);
+		const string RedirectUri = "/Auth/Callback";
+		logger.LogDebug("Request scheme: {Scheme}", Request.Scheme);
+		var properties = manager.ConfigureExternalAuthenticationProperties(Provider, RedirectUri);
+		return Challenge(properties, Provider);
 	}
 }
