@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcHelper;
 using Vrap.Database;
+using Vrap.Database.LifeLog.Configuration;
 using Vrap.Database.LifeLog.Entries;
 using Vrap.LifeLog.Web.Infra.Mvc;
 using static Vrap.Database.LifeLog.LifeLogHelpers;
@@ -26,6 +27,8 @@ public sealed partial class EntryController : MvcController
 
 		var fields = (await dbContext.FieldEntries
 			.Where(field => field.Entry.Id == id)
+			.Include(field => field.TableField)
+			.ThenInclude(field => ((EnumField)field).Options)
 			.OrderBy(field => field.TableField.Ordinal)
 			.Select(field => new
 			{

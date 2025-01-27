@@ -260,6 +260,8 @@ public sealed partial class AddController : MvcController
 		var tempFields = await dbContext
 			.DataTables
 			.Where(table => table.Id == tableId)
+			.Include(table => table.Fields)
+			.ThenInclude(field => ((EnumField)field).Options)
 			.Select(table => table.Fields.OrderBy(field => field.Ordinal).ToList())
 			.FirstOrDefaultAsync();
 
