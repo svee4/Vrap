@@ -12,7 +12,7 @@ namespace Vrap.LifeLog.Web.Features.Auth.Callback;
 public sealed partial class CallbackController : MvcController
 {
 	[HttpGet("")]
-	public async Task<IActionResult> Index(string? returnUrl, string? remoteError, 
+	public async Task<IActionResult> Index(string? returnUrl, string? remoteError,
 		[FromServices] SignInManager<IdentityUser> signinManager,
 		[FromServices] UserManager<IdentityUser> userManager,
 		[FromServices] IConfiguration configuration,

@@ -26,19 +26,9 @@ public static class StartupExtensions
 		builder.Services.AddSerilog((sp, config) =>
 		{
 			config
-				.Enrich.FromLogContext();
+				.Enrich.FromLogContext()
+				.ReadFrom.Configuration(sp.GetRequiredService<IConfiguration>());
 
-			if (builder.Environment.IsDevelopment())
-			{
-				config
-					.WriteTo.Console(
-						outputTemplate: "",
-						formatProvider: CultureInfo.InvariantCulture)
-					.MinimumLevel.Information()
-					.MinimumLevel.Override("Vrap", Serilog.Events.LogEventLevel.Debug);
-			}
-
-			config.ReadFrom.Configuration(sp.GetRequiredService<IConfiguration>());
 			configure(sp, config);
 		});
 	}
