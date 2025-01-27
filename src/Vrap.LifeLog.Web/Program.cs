@@ -53,14 +53,10 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
-app.Services.GetRequiredService<ILogger<Program>>().LogWarning("Environment: {Environment}", app.Environment.EnvironmentName);
-app.Services.GetRequiredService<ILogger<Program>>().LogWarning("IsDevelopment: {IsDevelopment}", app.Environment.IsDevelopment());
-app.Services.GetRequiredService<ILogger<Program>>().LogWarning("IsProduction: {IsProduction}", app.Environment.IsProduction());
-
 if (!app.Environment.IsDevelopment())
 {
-	app.Services.GetRequiredService<ILogger<Program>>().LogDebug("Adding ForwardedHeaders middleware");
 	_ = app.UseForwardedHeaders();
+	app.Services.GetRequiredService<ILogger<Program>>().LogWarning("Added ForwardedHeaders middleware");
 	_ = app.UseExceptionHandler("/Error");
 }
 
