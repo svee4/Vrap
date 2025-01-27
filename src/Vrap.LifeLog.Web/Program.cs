@@ -48,15 +48,20 @@ builder.Services.AddScoped<HumanizerService>();
 builder.Services.AddControllersWithViews(options => options.ModelBinderProviders.Insert(0,
 		new Vrap.LifeLog.Web.Features.DataTables.Table.Edit.EditController.AddFieldModelBinderProvider()));
 
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-	options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
-
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-	_ = app.UseForwardedHeaders();
-	app.Services.GetRequiredService<ILogger<Program>>().LogWarning("Added ForwardedHeaders middleware");
+	var options = new ForwardedHeadersOptions
+	{
+		ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+	};
+
+	// this is safe because this app in production is only accessible via the proxy
+	options.KnownNetworks.Clear();
+	options.KnownProxies.Clear();
+
+	_ = app.UseForwardedHeaders(options);
 	_ = app.UseExceptionHandler("/Error");
 }
 
@@ -71,8 +76,7 @@ app.MapControllers();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {
-	var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-	logger.LogInformation("Migrating database");
+	scope.ServiceProvider.GetRequiredService<ILogger<Program>>().LogInformation("Migrating database");
 	await using var dbContext = scope.ServiceProvider.GetRequiredService<LifeLogDbContext>();
 	await dbContext.Database.MigrateAsync();
 }
