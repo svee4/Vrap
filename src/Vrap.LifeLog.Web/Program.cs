@@ -49,12 +49,13 @@ builder.Services.AddControllersWithViews(options => options.ModelBinderProviders
 		new Vrap.LifeLog.Web.Features.DataTables.Table.Edit.EditController.AddFieldModelBinderProvider()));
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
-	options.ForwardedHeaders = ForwardedHeaders.All);
+	options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
 
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
+	app.Services.GetRequiredService<ILogger<Program>>().LogDebug("Adding ForwardedHeaders middleware");
 	_ = app.UseForwardedHeaders();
 	_ = app.UseExceptionHandler("/Error");
 }
