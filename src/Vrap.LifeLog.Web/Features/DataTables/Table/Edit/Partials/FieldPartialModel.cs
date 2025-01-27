@@ -20,7 +20,7 @@ public sealed class FieldPartialModel(string name, FieldType type, FieldArgument
 			static IReadOnlyList<string> (DateTimeArguments args) => [
 				$"Minimum value: {args.MinValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}",
 				$"Maximum value: {args.MaxValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}"],
-			static (EnumArguments args) => [$"Options ({args.Options.Count}): {string.Join(", ", args.Options)}"],
+			static (EnumArguments args) => [$"Options ({args.Options.Count}): {string.Join(", ", args.Options.Select(op => op.Value))}"],
 			static (NumberArguments args) => [
 				$"Minimum value: {args.MinValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}",
 				$"Maximum value: {args.MaxValue?.ToString(CultureInfo.InvariantCulture) ?? "null"}"],

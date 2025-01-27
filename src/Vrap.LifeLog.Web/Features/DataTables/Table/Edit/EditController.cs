@@ -30,6 +30,7 @@ public partial class EditController : MvcController
 	{
 		var table = dbContext.DataTables
 			.Include(table => table.Fields)
+			.ThenInclude(field => ((EnumField)field).Options)
 			.Select(table => new
 			{
 				Id = table.Id,
