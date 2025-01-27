@@ -17,6 +17,8 @@ public sealed partial class BrowseController : MvcController
 	[HttpGet("{id:int}")]
 	public async Task<IActionResult> Get(int id, [FromServices] VrapDbContext dbContext)
 	{
+		// headers and field entries are not in the same order but at this point i have better things to do
+
 		var tableData = await dbContext.DataTables
 			.Where(table => table.Id == id)
 			.Include(table => table.Fields)
