@@ -11,4 +11,4 @@ public sealed class BrowseViewModel
 }
 
 public record FieldData(FieldType Type, string FieldName);
-public record EntryData(int Id, DateTimeOffset Created, IReadOnlyList<DataHelpers.FieldEntry> Entries);
+public record EntryData(int Id, DateTimeOffset Created, IReadOnlyList<LifeLogHelpers.FieldValueSlim> Entries);
