@@ -18,10 +18,11 @@ public sealed partial class CallbackController : MvcController
 		[FromServices] IConfiguration configuration,
 		[FromServices] ILogger<CallbackController> logger)
 	{
+
 		returnUrl ??= "/";
 		if (remoteError != null)
 		{
-			throw new ServerException($"Remote error");
+			return Result().ServerError("Remote error");
 		}
 
 		var info = await signinManager.GetExternalLoginInfoAsync();

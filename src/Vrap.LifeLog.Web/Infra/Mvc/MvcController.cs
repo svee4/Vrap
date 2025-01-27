@@ -36,7 +36,6 @@ public sealed class MvcResult(Controller controller)
 		return this;
 	}
 
-
 	public MvcResult WithView(ViewResult view) => WithResult(view);
 
 	public MvcResult WithView(PartialViewResult partialView) => WithResult(partialView);
@@ -48,6 +47,11 @@ public sealed class MvcResult(Controller controller)
 			ReturnLink = returnLink
 		}))
 		.WithStatus(HttpStatusCode.NotFound)
+		.ToActionResult();
+
+	public IActionResult ServerError(string message) =>
+		WithResult(_controller.Content(message))
+		.WithStatus(HttpStatusCode.InternalServerError)
 		.ToActionResult();
 
 	public MvcResult WithStatus(HttpStatusCode status)
