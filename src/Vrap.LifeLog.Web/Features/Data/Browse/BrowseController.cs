@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcHelper;
 using Vrap.Database;
-using Vrap.Database.LifeLog;
 using Vrap.Database.LifeLog.Configuration;
 using Vrap.Database.LifeLog.Entries;
 using Vrap.LifeLog.Web.Infra.Mvc;

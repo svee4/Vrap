@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Serilog;
-using System.Globalization;
 using Vrap.Database;
 
 namespace Vrap.Shared;
