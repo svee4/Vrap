@@ -83,6 +83,7 @@ select {
 
 html {
 	height: 100%;
+	background-color: #eee;
 }
 
 body {

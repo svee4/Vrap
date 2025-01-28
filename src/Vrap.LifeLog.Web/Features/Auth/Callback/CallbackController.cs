@@ -73,10 +73,10 @@ public sealed partial class CallbackController : MvcController
 			{
 				throw new ServerException($"Failed to add login: {string.Join(", ", result3.Errors)}");
 			}
-			
+
 			await signinManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
 		}
 
-		return LocalRedirect("/");
+		return LocalRedirect(returnUrl);
 	}
 }

@@ -3,14 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Vrap.LifeLog.Web</title>
+    <title>@(ViewData["Title"] is { } s ? $"{s} - " : "")Vrap.LifeLog.Web</title>
     <link rel="stylesheet" href="/base.css" />
 
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
     <script src="https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js"></script>
 
-    @RenderSection("Head", required: false)
+    <script>
+        try {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.cookie = "timezone=" + timezone;
+        } catch(e) {
+            console.error("Could not set timezone", e);
+        }
+    </script>
 
+    @RenderSection("Head", required: false)
 </head>
 <body hx-ext="response-targets">
    <header id="page-header">

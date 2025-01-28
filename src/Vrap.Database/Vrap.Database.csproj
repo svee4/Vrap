@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<LangVersion>preview</LangVersion>
-		<NoWarn>$(NoWarn);IDE0022;IDE0058</NoWarn>
+		<NoWarn>$(NoWarn);IDE0022;IDE0058;CA1812</NoWarn>
 	</PropertyGroup>
 	
 	<ItemGroup>

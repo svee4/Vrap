@@ -7,6 +7,7 @@ using Vrap.LifeLog.Web.Infra;
 using Vrap.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Vrap.LifeLog.Web.Infra.RequestServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,10 @@ builder.Services.AddAuthorizationBuilder()
 		.RequireAuthenticatedUser()
 		.Build());
 
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<RequestFeatures>();
+builder.Services.AddScoped<RequestCulture>();
+builder.Services.AddScoped<RequestTimeZone>();
 builder.Services.AddScoped<HumanizerService>();
 
 builder.Services.AddControllersWithViews(options => options.ModelBinderProviders.Insert(0,
@@ -70,6 +74,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseTimeZoneMiddleware();
 
 app.MapStaticAssets();
 app.MapControllers();

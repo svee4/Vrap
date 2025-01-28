@@ -8,6 +8,7 @@ using Vrap.Database.LifeLog.Configuration;
 using Vrap.Database.LifeLog.Entries;
 using Vrap.LifeLog.Web.Features.DataTables.Table.Add;
 using Vrap.LifeLog.Web.Infra.Mvc;
+using Vrap.LifeLog.Web.Infra.RequestServices;
 using static Vrap.Database.LifeLog.LifeLogHelpers;
 
 namespace Vrap.LifeLog.Web.Features.DataTables.Table;
@@ -32,7 +33,10 @@ public sealed partial class AddController : MvcController
 	}
 
 	[HttpPost("")]
-	public async Task<IActionResult> Add(int id, [FromServices] VrapDbContext dbContext, CancellationToken token)
+	public async Task<IActionResult> Add(int id,
+		[FromServices] VrapDbContext dbContext,
+		[FromServices] RequestTimeZone requestTimeZone,
+		CancellationToken token)
 	{
 		var fields = await GetTableFields(id, dbContext);
 		if (fields is null)
@@ -40,7 +44,7 @@ public sealed partial class AddController : MvcController
 			return Result().NotFound($"/DataTables/{id}/Add", "/DataTables");
 		}
 
-		var helper = new ParsingHelper(id, dbContext, this);
+		var helper = new ParsingHelper(id, dbContext, this, requestTimeZone);
 
 		var success = true;
 		foreach (var field in fields)
@@ -110,11 +114,17 @@ public sealed partial class AddController : MvcController
 		return Result().WithHtmxRedirect($"/Data/Entry/{entry.Id}").ToActionResult();
 	}
 
-	private sealed partial class ParsingHelper(int tableId, VrapDbContext dbContext, Controller controller)
+	private sealed partial class ParsingHelper(
+		int tableId,
+		VrapDbContext dbContext,
+		Controller controller,
+		RequestTimeZone requestTimeZone)
 	{
 		private readonly int _tableId = tableId;
 		private readonly VrapDbContext _dbContext = dbContext;
 		private readonly Controller _controller = controller;
+		private readonly RequestTimeZone _requestTimeZone = requestTimeZone;
+
 		private ModelStateDictionary ModelState => _controller.ModelState;
 
 		public List<FieldEntry> Entries { get; } = [];
@@ -135,22 +145,8 @@ public sealed partial class AddController : MvcController
 				return Task.FromResult(false);
 			}
 
-			if (!int.TryParse(_controller.Request.Form["timezone"], out var timezone))
-			{
-				ModelState.AddModelError(fieldName, "Could not parse timezone");
-				return Task.FromResult(false);
-			}
-
-			DateTimeOffset timeValue;
-			try
-			{
-				var timezoneOffset = TimeSpan.FromMinutes(timezone);
-				timeValue = new DateTimeOffset(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second, timezoneOffset);
-			}
-			catch (ArgumentException)
-			{
-				return Task.FromResult(false);
-			}
+			var timeZone = _requestTimeZone.TimeZone ?? TimeZoneInfo.Utc;
+			var timeValue = new DateTimeOffset(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second, timeZone.BaseUtcOffset);
 
 			if (args.MinValue is { } minValue && timeValue < minValue)
 			{

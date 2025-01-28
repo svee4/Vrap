@@ -14,6 +14,7 @@ namespace Vrap.LifeLog.Web.Features.Data.Browse;
 [MapView<BrowseViewModel>("./BrowseView")]
 public sealed partial class BrowseController : MvcController
 {
+
 	[HttpGet("{id:int}")]
 	public async Task<IActionResult> Get(int id, [FromServices] VrapDbContext dbContext)
 	{

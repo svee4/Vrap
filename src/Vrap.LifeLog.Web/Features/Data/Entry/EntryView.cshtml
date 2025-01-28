@@ -3,21 +3,16 @@
 @inject Vrap.LifeLog.Web.Infra.HumanizerService humanizer
 
 @section Head {
-    <link rel="stylesheet" href="/Data/entry.css" />
     <link rel="stylesheet" href="/table.css" />
-
 }
-
 
 <h2>@Model.TableName</h2>
 <p>@humanizer.ToDateTimeString(Model.Created)</p>
 
-<table class="table">
+<div class="dual-grid">
     @foreach (var field in Model.Fields)
     {
-        <tr>
-            <th class="narrow-col"><div>@field.Name</div></th>
-            <td class="wide-col"><div>@humanizer.FieldValueSlimToString(field.GetValue())</div></td>
-        </tr>
+        <p>@field.Name: </p>
+        <p>@humanizer.FieldValueSlimToString(field.GetValue())</p>
     }
-</table>
+</div>
