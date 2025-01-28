@@ -7,8 +7,11 @@ namespace Vrap.LifeLog.Web.Infra;
 public sealed class HumanizerService(RequestTimeZone timeZone, RequestCulture culture)
 {
 	public const string DefaultDateFormat = "dd/MM/yyyy";
-	public const string DefaultTimeFormat = "HH:mm:ss";
-	public const string DefaultDateTimeFormat = $"{DefaultTimeFormat} {DefaultDateFormat} K";
+	public const string DefaultTimeFormat = "HH:mm";
+	public const string PreciseTimeFormat = "HH:mm:ss";
+
+	public const string DefaultDateTimeFormat = $"{DefaultTimeFormat} {DefaultDateFormat}";
+	public const string PreciseDateTimeFormat = $"{PreciseTimeFormat} {DefaultDateFormat} K";
 
 	public CultureInfo Culture { get; } = culture.Culture ?? CultureInfo.InvariantCulture;
 	public TimeZoneInfo TimeZone { get; } = timeZone.TimeZone ?? TimeZoneInfo.Utc;
@@ -33,8 +36,14 @@ public sealed class HumanizerService(RequestTimeZone timeZone, RequestCulture cu
 	public string ToTimeString(DateTimeOffset time) =>
 		InRequestTimeZone(time).ToString(DefaultTimeFormat, Culture);
 
-	public string ToDateTimeString(DateTimeOffset date) =>
-		InRequestTimeZone(date).ToString(DefaultDateTimeFormat, Culture);
+	public string ToPreciseTimeString(DateTimeOffset time) =>
+		InRequestTimeZone(time).ToString(PreciseTimeFormat, Culture);
+
+	public string ToDateTimeString(DateTimeOffset datetime) =>
+		InRequestTimeZone(datetime).ToString(DefaultDateTimeFormat, Culture);
+
+	public string ToPreciseDateTimeString(DateTimeOffset datetime) =>
+		InRequestTimeZone(datetime).ToString(PreciseDateTimeFormat, Culture);
 
 	public string ToNumericString(decimal value) =>
 		value.ToString(Culture);

@@ -83,14 +83,13 @@ select {
 
 html {
 	height: 100%;
-	background-color: #eee;
+	background-color: rgb(250, 250, 250);
 }
 
 body {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	background-color: rgb(252, 252, 252);
 }
 
 #page-main {
